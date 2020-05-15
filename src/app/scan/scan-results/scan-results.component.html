@@ -1,0 +1,26 @@
+<div class="scanner-result-content">
+  <mat-toolbar color="primary">
+    <span>Covid Mobile Scanner</span>
+  </mat-toolbar>
+  <div fxLayout="column" fxLayoutGap="16px" class="body-result-content">
+    <h1>Covid Test Results</h1>
+    <div *ngIf="errorScan$ | async">
+      <h1>There was an error reading your results</h1>
+      <h2>Please try again later</h2>
+    </div>
+    <div *ngIf="scan$ | async as scan" fxLayout="column">
+      <h4>Scanned on: {{scan.timestamp | date:'fullDate'}}</h4>
+      <h1 class="status status-{{scan.name}}">Result: {{scan.label}}</h1>
+      <h3>{{scan.description}}</h3>
+      <div *ngIf="ackLoadingState$ | async as state">
+        <div *ngIf="state === 'start' || state === 'error'" fxLayout="column">
+          <button mat-raised-button color="primary" (click)="ack()" class="scan-button" [disabled]="state  == 'loading'">Acknowledge</button>
+          <div *ngIf="state  === 'start'"> Please acknowlege to stopped recieving notifications</div>
+          <div *ngIf="state === 'error'">An error occured. Please try again.</div>
+        </div>
+        <div *ngIf="state === 'success'" fxLayout="column">Acknowlege successful</div>
+        <button mat-button color="primary" (click)="scanner()" class="scan-button" *ngIf="state === 'success'">Back to Scanner</button>
+      </div>
+    </div>
+  </div>
+</div>

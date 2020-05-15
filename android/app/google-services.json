@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "113853660091",
+    "firebase_url": "https://cmta-mobile.firebaseio.com",
+    "project_id": "cmta-mobile",
+    "storage_bucket": "cmta-mobile.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:113853660091:android:7632b016b200d81ca4e29e",
+        "android_client_info": {
+          "package_name": "org.covdx.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "113853660091-578m8qq3t8c0kjuffhdboi6elf136eo5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAu1Sai59eBAinqQRQILqmv3LdP7JpRRKI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "113853660091-578m8qq3t8c0kjuffhdboi6elf136eo5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

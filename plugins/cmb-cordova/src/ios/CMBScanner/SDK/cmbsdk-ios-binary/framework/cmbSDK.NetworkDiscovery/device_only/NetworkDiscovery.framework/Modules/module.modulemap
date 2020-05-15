@@ -1,0 +1,6 @@
+framework module NetworkDiscovery {
+  umbrella header "NetworkDiscovery.h"
+
+  export *
+  module * { export * }
+}

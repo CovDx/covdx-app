@@ -1,0 +1,11 @@
+{
+  "appId": "org.covdx.app",
+  "appName": "cmta",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist/covid",
+  "cordova": {},
+  "android": {
+    "allowMixedContent": true
+}
+}

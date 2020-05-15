@@ -1,0 +1,46 @@
+.container {
+  padding: 16px 8px 8px 8px;
+}
+
+.scan-button {
+  height: 64px;
+  font-size: 18px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+}
+
+.status {
+  font-weight: bold;
+}
+.saving-status {
+  color: #5959fa;
+}
+
+.pending-status {
+  color: #666666;
+}
+
+.negative-status {
+  color: #00aa00;
+}
+
+.inconclusive-status {
+  color: #999900;
+}
+
+.positive-status {
+  color: #dd0000;
+}
+
+.history {
+  font-size:8px;
+}
+
+.scanner-content {
+  height: 100%;
+}
+
+.body-content {
+  height: calc(100% - 56px);
+  padding: 16px 8px 8px 8px;
+}
