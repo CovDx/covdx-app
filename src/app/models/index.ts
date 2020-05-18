@@ -1,1 +1,2 @@
-export * from './scan-history';
+export * from './scan-result';
+export * from './scan-list-item';
