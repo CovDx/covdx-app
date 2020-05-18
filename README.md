@@ -1,5 +1,27 @@
-# Covid
+# Covid Mobile Test App
 
+## Requirements
+Node version 14.0.0:
+`nvm install 14`
+
+cocoapods:
+`sudo gem install cocoapods`
+
+xcode command tools:
+`xcode-select --install`
+
+
+## Build steps
+1. Clone 
+`git clone https://github.com/CoVDx/covdx-app.git`
+2. `npm install nan`
+3. `npm install`
+4. `npm run build`
+5. `npx cap sync`
+6. `npx cap open ios`
+7. Under Signing & Capabilities, verify team and bundle ID
+
+# Original default Angular CLI readme stuff 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.1.3.
 
 ## Development server
