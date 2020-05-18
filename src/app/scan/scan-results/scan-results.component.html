@@ -1,30 +1,3 @@
-<!--<div class="scanner-result-content">
-  <mat-toolbar color="primary">
-    <span>CMTA</span>
-  </mat-toolbar>
-  <div fxLayout="column" fxLayoutGap="16px" class="body-result-content">
-    <h1>Test Results</h1>
-    <div *ngIf="errorScan$ | async">
-      <h1>There was an error reading your results</h1>
-      <h2>Please try again later</h2>
-    </div>
-    <div *ngIf="scan$ | async as scan" fxLayout="column">
-      <h4>Scanned on: {{scan.timestamp | date:'fullDate'}}</h4>
-      <h1 class="status status-{{scan.name}}">Result: {{scan.label}}</h1>
-      <h3>{{scan.description}}</h3>
-      <div *ngIf="ackLoadingState$ | async as state">
-        <div *ngIf="state === 'start' || state === 'error'" fxLayout="column">
-          <button mat-raised-button color="primary" (click)="ack()" class="scan-button" [disabled]="state  == 'loading'">Acknowledge</button>
-          <div *ngIf="state  === 'start'"> Please acknowlege to stopped recieving notifications</div>
-          <div *ngIf="state === 'error'">An error occured. Please try again.</div>
-        </div>
-        <div *ngIf="state === 'success'" fxLayout="column">Acknowlege successful</div>
-        <button mat-button color="primary" (click)="scanner()" class="scan-button" *ngIf="state === 'success'">Back to Scanner</button>
-      </div>
-    </div>
-  </div>
-</div> -->
-
 <div class="results-wrapper" fxLayout="column" fxLayoutAlign="space-between center">
   <mat-toolbar color="primary" fxS>
     <span class="title-center">Results</span>
@@ -35,13 +8,13 @@
     </div>
     <div *ngIf="scan$ | async as scan" fxLayout="column">
       <a>{{scan.timestamp | date:'fullDate'}}</a>
-      <div class="result-circle result-{{scan.label}}" fxLayout="column" fxLayoutAlign="center">
+      <div class="result-circle result-{{scan.result.label}}" fxLayout="column" fxLayoutAlign="center">
         <a class="result-circle-text">Test Result</a>
-        <h1 *ngIf="scan.label != 'pending'" class="result-circle-text">{{scan.label}}</h1>
-        <h1 *ngIf="scan.label === 'pending'" class="result-circle-text">Pending</h1>
+        <h1 *ngIf="scan.result.label != 'pending'" class="result-circle-text">{{scan.result.label}}</h1>
+        <h1 *ngIf="scan.result.label === 'pending'" class="result-circle-text">Pending</h1>
       </div>
-      <a *ngIf="scan.label === 'positive'">You're good to go!</a>
-      <a *ngIf="scan.label === 'negative'">Contact your doctor immediately.</a>
+      <a *ngIf="scan.result.label === 'positive'">You're good to go!</a>
+      <a *ngIf="scan.result.label === 'negative'">Contact your doctor immediately.</a>
       <div *ngIf="ackLoadingState$ | async as state">
         <div *ngIf="state === 'start' || state === 'error'" fxLayout="column">
           <button mat-raised-button color="primary" (click)="ack()" class="scan-button" [disabled]="state  == 'loading'">Acknowledge</button>

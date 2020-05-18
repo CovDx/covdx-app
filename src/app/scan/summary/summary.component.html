@@ -10,22 +10,18 @@
     <div *ngIf="!(hasResult$ | async)" fxLayout="row" fxLayoutAlign="center">
       <a class="centered-text">Add a new sample by tapping the plus below.</a>
     </div>
-    <!--<mat-list>
+    <mat-list>
       <div mat-subheader>Test History</div>
       <mat-list-item *ngFor="let scan of scans$ | async">
-        <div fxLayout="row" fxLayoutAlign="start center" class="full-width">
+        <div fxLayout="row" fxLayoutAlign="start center" class="full-width" fxLayoutGap="8px">
           <div fxFlex="116px">{{scan.timestamp | date:'MMM d, yyy'}}</div>
+          <div>{{scan.tag}}</div>
           <div>
-            <div class="status">{{scan.label}}</div>
-          </div>
-        <div *ngIf="test.status === 'positive'" fxFlex="1 1 100%" fxLayout="row" fxLayoutAlign="end center">
-            <button mat-mini-fab color="primary" (click)="announce(test)">
-              <mat-icon>wifi</mat-icon>
-            </button>
+            <div class="status">{{scan.status}}</div>
           </div>
         </div>
       </mat-list-item>
-    </mat-list> -->
+    </mat-list>
   </div>
   <mat-toolbar class="navigation-bar" fxLayoutAlign="space-around center">
     <!--<button mat-icon-button>

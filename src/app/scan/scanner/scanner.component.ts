@@ -2,15 +2,15 @@ import { Component, OnInit, ChangeDetectionStrategy, NgZone } from '@angular/cor
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Plugins, PushNotificationToken, PushNotificationActionPerformed, PushNotificationDeliveredList } from '@capacitor/core';
+import { Plugins, PushNotificationToken, PushNotificationActionPerformed } from '@capacitor/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ScanService } from '../../services';
-import { ScanHistory } from '../../models';
+import { ScanResult, ScanListItem } from '../../models';
 import cmbScanner from 'cmbsdk-cordova/www/CmbScanner';
 import { FCM } from "capacitor-fcm";
 
 const fcm = new FCM();
-const { Device, PushNotifications } = Plugins;
+const { Device, Modals } = Plugins;
 
 @Component({
   selector: 'cov-scanner',
@@ -20,11 +20,10 @@ const { Device, PushNotifications } = Plugins;
 })
 export class ScannerComponent implements OnInit {
   private isPhone = true;
+  editingTag: string;
+  editingStatus: string;
   deviceId$ = new BehaviorSubject<string>(null);
-  isScanning$ = new BehaviorSubject<boolean>(false);
-  hasResult$ = new BehaviorSubject<boolean>(false);
   private deviceType: string;
-  scans$ = new BehaviorSubject<ScanHistory[]>([]);
   constructor(private zone: NgZone,
               private scanService: ScanService,
               private snackBar: MatSnackBar,
@@ -39,14 +38,9 @@ export class ScannerComponent implements OnInit {
         this.deviceType = 'android';
       } else {
         this.deviceType = info.platform;
-        app.push();
-        app.loadScanner();
       }
     });
-  }
-
-  loadScanner() {
-    let app = this;
+    console.log('starting scanner config');
     cmbScanner.setCameraMode(0);
     cmbScanner.enableImageGraphics(true);
     cmbScanner.setPreviewContainerPositionAndSize(0,0,100,70);
@@ -73,7 +67,7 @@ export class ScannerComponent implements OnInit {
       if(result && result.readResults && result.readResults.length > 0){
         result.readResults.forEach(function (item, index){
             if (item.goodRead == true) {
-              this.newScan(item.readString);
+              app.newScan(item.readString);
               console.log('success: ' + item.symbologyString + ' ' + item.readString);
             }
             else{
@@ -84,10 +78,26 @@ export class ScannerComponent implements OnInit {
   }
 
   newScan(barcode: string) {
+    const scanItem: ScanListItem = {
+      id: null,
+      timestamp: new Date(Date.now()).toString(),
+      tag: 'New Scan',
+      status: 'saving',
+      result: null
+    };
+    let app = this;
     this.scanService.save({barcode, deviceId: this.deviceId$.getValue(), deviceType: this.deviceType}).subscribe(scanRes => {
+      scanItem.id = scanRes.id;
+      scanItem.status = 'pending';
+      this.scanService.saveScan(scanItem)
       this.zone.run(() => {
-        this.snackBar.open('Your scan has been submitted successfully', 'OK', {
-          verticalPosition: 'bottom'
+        Modals.prompt({
+          title: 'Label',
+          message: 'Please label your scan'
+        }).then(result => {
+          scanItem.tag = result.value || scanItem.tag;
+          this.scanService.saveScan(scanItem);
+          this.router.navigateByUrl('');
         });
       })
     }, res => {
@@ -103,20 +113,17 @@ export class ScannerComponent implements OnInit {
       } else {
         message = 'An error has occured while uploading scan';
       }
-      this.zone.run(() => {
-        this.snackBar.open(message, 'OK', {
-          verticalPosition: 'bottom'
-        });
-      })
-    });
-    this.zone.run(() => {
-      this.isScanning$.next(false);
+      Modals.alert({
+        title: 'Duplicate',
+        message: 'You already scanned that barcode'
+      }).then(() => {
+        app.scan();
+      });
     });
   }
 
   cancel() {
     if (this.isPhone) {
-      this.isScanning$.next(false);
       cmbScanner.stopScanning();
     }
     this.router.navigateByUrl('/summary')
@@ -126,29 +133,8 @@ export class ScannerComponent implements OnInit {
     if (!this.isPhone) {
       this.newScan(`test-barcode-${Math.random()}`);
     } else {
-      this.isScanning$.next(true);
       cmbScanner.startScanning();
       cmbScanner.sendCommand('SET CAMERA.ZOOM 1');
     }
-  }
-
-  push() {
-    PushNotifications.requestPermission().then( result => {
-      if (result.granted) {
-        console.info('Push notification permission granted');
-        PushNotifications.register();
-      } else {
-        alert("Please enable notifications to scan a test and recieve your results");
-      }
-    });
-    PushNotifications.addListener('registration', (token: PushNotificationToken) => {
-      console.log('Push registration success, token: ' + token.value);
-      fcm.getToken().then(token => {
-        console.log('FCM token: ' + token.token);
-        this.zone.run(() => {
-          this.deviceId$.next(token.token);
-        });
-      });
-    });
   }
 }

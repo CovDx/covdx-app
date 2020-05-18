@@ -3,11 +3,11 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { Plugins, PushNotificationToken, PushNotificationActionPerformed } from '@capacitor/core';
 import { ScanService } from '../../services';
-import { ScanHistory } from '../../models';
+import { ScanListItem } from '../../models';
 import { FCM } from "capacitor-fcm";
 
 const fcm = new FCM();
-const { Device, PushNotifications, App } = Plugins;
+const { Device, PushNotifications, App, Storage } = Plugins;
 
 @Component({
   selector: 'summary',
@@ -21,7 +21,7 @@ export class SummaryComponent implements OnInit {
   deviceId$ = new BehaviorSubject<string>(null);
   hasResult$ = new BehaviorSubject<boolean>(false);
   private deviceType: string;
-  scans$ = new BehaviorSubject<ScanHistory[]>([]);
+  scans$ = new BehaviorSubject<ScanListItem[]>([]);
   constructor(private zone: NgZone,
               private scanService: ScanService,
               private router: Router) { }
@@ -38,16 +38,15 @@ export class SummaryComponent implements OnInit {
         app.push();
       }
     });
-    App.addListener('appStateChange', state => {
-      app.checkNotifications();
+    Storage.get({key: 'scans'}).then(scans => {
+      this.scans$.next(JSON.parse(scans.value) || []);
     });
-    this.checkNotifications();
   }
 
   checkNotifications() {
     PushNotifications.getDeliveredNotifications().then(notifications => {
       console.log('Checkout existing notifications ' + JSON.stringify(notifications));
-      const scan: ScanHistory = notifications.notifications.map(x => x.data)[0]
+      const scan: ScanListItem = notifications.notifications.map(x => x.data)[0]
       if (scan.id) {
         PushNotifications.removeAllDeliveredNotifications();
         console.log('New scan found ' + JSON.stringify(scan));
@@ -60,7 +59,7 @@ export class SummaryComponent implements OnInit {
     });
   }
 
-  newResult(scan: ScanHistory) {
+  newResult(scan: ScanListItem) {
     this.scanService.historyRecieved(scan);
     this.zone.run(() => {
       this.router.navigateByUrl('scan-results');
