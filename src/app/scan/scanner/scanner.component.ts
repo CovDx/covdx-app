@@ -2,15 +2,16 @@ import { Component, OnInit, ChangeDetectionStrategy, NgZone } from '@angular/cor
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Plugins, PushNotificationToken, PushNotificationActionPerformed } from '@capacitor/core';
+import { Plugins, PushNotificationToken, PushNotificationActionPerformed, PushNotificationDeliveredList } from '@capacitor/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ScanService } from '../../services';
-import { ScanResult, ScanListItem } from '../../models';
+import { ScanHistory } from '../../models';
+import { environment } from '../../../environments/environment';
 import cmbScanner from 'cmbsdk-cordova/www/CmbScanner';
 import { FCM } from "capacitor-fcm";
 
 const fcm = new FCM();
-const { Device, PushNotifications, App, Storage } = Plugins;
+const { Device, PushNotifications, App } = Plugins;
 
 @Component({
   selector: 'cov-scanner',
@@ -20,13 +21,11 @@ const { Device, PushNotifications, App, Storage } = Plugins;
 })
 export class ScannerComponent implements OnInit {
   private isPhone = true;
-  editingTag: string;
-  editingStatus: string;
   deviceId$ = new BehaviorSubject<string>(null);
   isScanning$ = new BehaviorSubject<boolean>(false);
   hasResult$ = new BehaviorSubject<boolean>(false);
   private deviceType: string;
-  scans$ = new BehaviorSubject<ScanListItem[]>([]);
+  scans$ = new BehaviorSubject<ScanHistory[]>([]);
   constructor(private zone: NgZone,
               private scanService: ScanService,
               private snackBar: MatSnackBar,
@@ -44,12 +43,9 @@ export class ScannerComponent implements OnInit {
       }
       app.push();
     });
-    Storage.get({key: 'scans'}).then(scans => {
-      this.scans$.next(JSON.parse(scans.value) || []);
-      App.addListener('appStateChange', state => {
-        app.checkNotifications();
-      });
-    })
+    App.addListener('appStateChange', state => {
+      app.checkNotifications();
+    });
     this.checkNotifications();
     console.log('starting scanner config');
     cmbScanner.setCameraMode(0);
@@ -92,7 +88,7 @@ export class ScannerComponent implements OnInit {
   checkNotifications() {
     PushNotifications.getDeliveredNotifications().then(notifications => {
       console.log('Checkout existing notifications ' + JSON.stringify(notifications));
-      const scan: ScanResult = notifications.notifications.map(x => x.data)[0]
+      const scan: ScanHistory = notifications.notifications.map(x => x.data)[0]
       if (scan.id) {
         PushNotifications.removeAllDeliveredNotifications();
         console.log('New scan found ' + JSON.stringify(scan));
@@ -104,56 +100,15 @@ export class ScannerComponent implements OnInit {
       }
     });
   }
-  newResult(scan: ScanResult) {
-    scan.acknowledged = false;
-    let scanItem = this.scans$.getValue().filter(x => x.id === scan.id)[0];
-    if (scanItem) {
-      scanItem.status = 'result';
-      scanItem.result = scan;
-      this.scanService.saveScanList(this.scans$.getValue());
-      this.scanService.historyRecieved(scanItem);
-      this.zone.run(() => {
-        this.router.navigateByUrl('scan-results');
-      });
-    }
-  }
-  result(scanItem: ScanListItem) {
-    this.scanService.historyRecieved(scanItem);
+  newResult(scan: ScanHistory) {
+    this.scanService.historyRecieved(scan);
     this.zone.run(() => {
       this.router.navigateByUrl('scan-results');
     });
   }
-  editTag(scanItem: ScanListItem) {
-    const currentEdit = this.scans$.getValue().filter(x => x.status === 'edit')[0];
-    if(currentEdit) {
-      currentEdit.status = this.editingStatus;
-    }
-    this.editingStatus = scanItem.status;
-    scanItem.status = 'edit';
-    this.editingTag = scanItem.tag;
-  }
-  saveTag(scanItem: ScanListItem) {
-    scanItem.tag = this.editingTag;
-    scanItem.status = this.editingStatus;
-    this.scans$.next(this.scans$.getValue().concat([]));
-    this.scanService.saveScanList(this.scans$.getValue());
-  }
-
   newScan(barcode: string) {
-    const scanItem: ScanListItem = {
-      id: null,
-      timestamp: new Date(Date.now()).toString(),
-      tag: 'New Scan',
-      status: 'saving',
-      result: null
-    };
-    this.scans$.next(this.scans$.getValue().concat([scanItem]));
     this.scanService.save({barcode, deviceId: this.deviceId$.getValue(), deviceType: this.deviceType}).subscribe(scanRes => {
-      scanItem.id = scanRes.id;
-      scanItem.status = 'pending';
-      this.scanService.saveScanList(this.scans$.getValue())
       this.zone.run(() => {
-        this.scans$.next(this.scans$.getValue().concat([]));
         this.snackBar.open('Your scan has been submitted successfully', 'OK', {
           verticalPosition: 'bottom'
         });
@@ -172,7 +127,6 @@ export class ScannerComponent implements OnInit {
         message = 'An error has occured while uploading scan';
       }
       this.zone.run(() => {
-        this.scans$.next(this.scans$.getValue().filter(x => x !== x));
         this.snackBar.open(message, 'OK', {
           verticalPosition: 'bottom'
         });
