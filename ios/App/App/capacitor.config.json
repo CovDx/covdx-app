@@ -1,5 +1,5 @@
 {
-  "appId": "org.covdx.app",
+  "appId": "com.jobycmta.app",
   "appName": "cmta",
   "bundledWebRuntime": false,
   "npmClient": "npm",
