@@ -1,9 +1,7 @@
-export class ScanResult {
+export class ScanHistory {
   id: string;
   timestamp: string;
   name: string;
   label: string;
   description: string;
-  acknowledged: boolean;
-
 }

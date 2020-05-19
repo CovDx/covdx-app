@@ -1,25 +1,22 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment'
 import { HttpClient } from '@angular/common/http';
-import { Plugins } from '@capacitor/core';
-import { ScanListItem, ScanResult } from '../models';
+import { ScanHistory } from '../models';
 import { BehaviorSubject } from 'rxjs';
-
-const { Storage } = Plugins;
 
 @Injectable({
   providedIn: 'root'
 })
 export class ScanService {
-  private scanResults$ = new BehaviorSubject<ScanListItem>(null);
+  private scanResults$ = new BehaviorSubject<ScanHistory>(null);
   constructor(private http: HttpClient) { }
 
   save(scan: {barcode: string, deviceId: string, deviceType: string}) {
-    console.log(`Saving scan ${environment.apiBase} ${JSON.stringify(scan)}`);
-    return this.http.post<ScanResult>(`${environment.apiBase}api/scans`, scan);
+    console.log(`Saving scan ${JSON.stringify(scan)}`);
+    return this.http.post<ScanHistory>(`${environment.apiBase}api/scans`, scan);
   }
 
-  historyRecieved(scan: ScanListItem) {
+  historyRecieved(scan: ScanHistory) {
     this.scanResults$.next(scan);
   }
 
@@ -29,18 +26,5 @@ export class ScanService {
 
   acknowledge(scanId: string) {
     return this.http.post(`${environment.apiBase}api/scans/acknowledge`, {scanId});
-  }
-
-  saveScanList(scans: ScanListItem[]) {
-    const scanStr = JSON.stringify(scans);
-    Storage.set({key: 'scans', value: scanStr});
-  }
-
-  saveScan(scan: ScanListItem) {
-    Storage.get({key: 'scans'}).then(scans => {
-      const oldScans = JSON.parse(scans.value).filter(x => x.id !== scan.id);
-      oldScans.push(scan);
-      this.saveScanList(oldScans);
-    });
   }
 }
