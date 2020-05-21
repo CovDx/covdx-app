@@ -3,7 +3,7 @@
   "appName": "cmta",
   "bundledWebRuntime": false,
   "npmClient": "npm",
-  "webDir": "dist/covid",
+  "webDir": "dist/cmta",
   "cordova": {},
   "android": {
     "allowMixedContent": true

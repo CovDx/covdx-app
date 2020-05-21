@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">covid</string>
-    <string name="title_activity_main">covid</string>
-    <string name="package_name">org.covdx.app</string>
-    <string name="custom_url_scheme">org.covdx.app</string>
+    <string name="app_name">cmta</string>
+    <string name="title_activity_main">cmta</string>
+    <string name="package_name">org.covdx.family</string>
+    <string name="custom_url_scheme">org.covdx.family</string>
 </resources>

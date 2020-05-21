@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "covid": {
+    "cmta": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -18,7 +18,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/covid",
+            "outputPath": "dist/cmta",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -68,18 +68,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "covid:build"
+            "browserTarget": "cmta:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "covid:build:production"
+              "browserTarget": "cmta:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "covid:build"
+            "browserTarget": "cmta:build"
           }
         },
         "test": {
@@ -117,16 +117,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "covid:serve"
+            "devServerTarget": "cmta:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "covid:serve:production"
+              "devServerTarget": "cmta:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "covid"
+  "defaultProject": "cmta"
 }

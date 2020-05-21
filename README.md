@@ -1,4 +1,4 @@
-# Covid Mobile Test App
+# CMTA
 
 ## Requirements
 Node version 14.0.0:
