@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.covdx.app">
+    package="org.covdx.family">
 
     <application
         android:allowBackup="true"
@@ -14,7 +14,7 @@
         <meta-data android:name="MX_MOBILE_LICENSE" android:value="gAUQpCyTizIWSxSHamO+NU7qV60bKcWTeI0my4avYE0="/>
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
-            android:name="org.covdx.app.MainActivity"
+            android:name="org.covdx.family.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask">

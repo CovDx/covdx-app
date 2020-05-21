@@ -1,4 +1,4 @@
-package org.covdx.app;
+package org.covdx.family;
 
 import android.os.Bundle;
 
