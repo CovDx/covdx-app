@@ -1,46 +1,35 @@
-.container {
-  padding: 16px 8px 8px 8px;
-}
 
-.scan-button {
-  height: 64px;
-  font-size: 18px;
-  margin-top: 18px;
-  margin-bottom: 18px;
-}
-
-.status {
-  font-weight: bold;
-}
-.saving-status {
-  color: #5959fa;
-}
-
-.pending-status {
-  color: #666666;
-}
-
-.negative-status {
-  color: #00aa00;
-}
-
-.inconclusive-status {
-  color: #999900;
-}
-
-.positive-status {
-  color: #dd0000;
-}
-
-.history {
-  font-size:8px;
-}
-
-.scanner-content {
+.scan-wrapper {
   height: 100%;
 }
 
-.body-content {
-  height: calc(100% - 56px);
-  padding: 16px 8px 8px 8px;
+.scanner-placeholder {
+  height: 70%;
+}
+
+.scan-toolbar {
+  background-color: transparent;
+}
+
+.scan-tips {
+  background-color: white;
+  overflow: auto;
+  align-items: center;
+  text-align: center;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  margin-top: -1.25em;
+  flex: 1;
+  padding: 20px;
+}
+
+.scan-tips h1 {
+  font-weight: bold;
+}
+
+.scan-tips ol{
+  background-color: white;
+  overflow: auto;
+  align-items: center;
+  text-align: left;
 }

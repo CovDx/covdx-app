@@ -1,4 +1,4 @@
-<div class="scanner-result-content">
+<!--<div class="scanner-result-content">
   <mat-toolbar color="primary">
     <span>CMTA</span>
   </mat-toolbar>
@@ -23,4 +23,39 @@
       </div>
     </div>
   </div>
+</div> -->
+
+<div class="results-wrapper" fxLayout="column" fxLayoutAlign="space-between center">
+  <mat-toolbar color="primary" fxS>
+    <span class="title-center">Results</span>
+  </mat-toolbar>
+  <div class="results-content" fxLayout="column" fxLayoutAlign="center">
+    <div *ngIf="errorScan$ | async">
+      <a>There was an error reading your results, please try again later.</a>
+    </div>
+    <div *ngIf="scan$ | async as scan" fxLayout="column">
+      <a>{{scan.timestamp | date:'fullDate'}}</a>
+      <div class="result-circle result-{{scan.label}}" fxLayout="column" fxLayoutAlign="center">
+        <a class="result-circle-text">Test Result</a>
+        <h1 *ngIf="scan.label != 'pending'" class="result-circle-text">{{scan.label}}</h1>
+        <h1 *ngIf="scan.label === 'pending'" class="result-circle-text">Pending</h1>
+      </div>
+      <a *ngIf="scan.label === 'positive'">You're good to go!</a>
+      <a *ngIf="scan.label === 'negative'">Contact your doctor immediately.</a>
+      <div *ngIf="ackLoadingState$ | async as state">
+        <div *ngIf="state === 'start' || state === 'error'" fxLayout="column">
+          <button mat-raised-button color="primary" (click)="ack()" class="scan-button" [disabled]="state  == 'loading'">Acknowledge</button>
+          <div *ngIf="state  === 'start'"> Please acknowlege to stop recieving notifications</div>
+          <div *ngIf="state === 'error'">An error occured. Please try again.</div>
+        </div>
+        <div *ngIf="state === 'success'" fxLayout="column">Acknowlege successful</div>
+        <button mat-button color="primary" (click)="scanner()" class="scan-button" *ngIf="state === 'success'">New Scan</button>
+      </div>
+    </div>
+  </div>
+  <mat-toolbar class="navigation-bar" fxLayoutAlign="space-around center">
+    <button mat-button (click)="exit()">
+      Okay
+    </button>
+  </mat-toolbar>
 </div>

@@ -1,36 +1,28 @@
-<div class="scanner-content">
-  <mat-toolbar color="primary">
-    <span>CMTA</span>
-  </mat-toolbar>
-  <div fxLayout="column" fxLayoutGap="16px" class="body-content">
-    <div *ngIf="hasResult$ | async" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="6px">
-      <mat-icon>notifications_active</mat-icon>
-      <div>Please click the notification to view your result.</div>
+<div class="scan-wrapper" fxLayout="column" fxLayoutAlign="stretch">
+  <div class="scanner-placeholder"></div>
+  <div class="scan-body" fxLayout="column" fxLayoutGap="16px">
+    <mat-toolbar class="scan-toolbar" fxLayoutAlign="space-around center">
+      <button mat-button (click)="cancel()">Cancel</button>
+    </mat-toolbar>
+    <div class="scan-tips">
+      <h1>Tips</h1>
+      <a>When the code is recognized, the scan window will disappear. If you're having trouble, try</a>
+      <ol>
+        <li>Zooming in by tapping the small magnifying glass icon</li>
+        <li>Turning on the flash to provide more light</li>
+      </ol>
     </div>
-    <button mat-raised-button color="primary" (click)="scan()" class="scan-button" [disabled]="!(deviceId$ | async)">Scan</button>
-    <div fxLayout="column" fxLayoutGap="26px">
-      <div>Click the scan button to scan the tiny square barcode on the bottom of your sample tube. When the code is recognized, the scan window will disappear.  If your phone isn’t recognizing the code:</div>
-      <div> Hold the tube between two fingers with the tube bottom flush with your fingers.</div>
-      <div> Try zooming in by tapping the small magnifying glass icon.</div>
-      <div> Try turning on the “flash” for more light. </div>
-    </div>
-    <div fxFlex="1 1 100%"></div>
-    <button mat-raised-button color="primary" (click)="stop()" class="scan-button" *ngIf="isScanning$ | async">Stop Scanning</button>
-    <!--<mat-list>
-      <div mat-subheader>Test History</div>
-      <mat-list-item *ngFor="let scan of scans$ | async">
-        <div fxLayout="row" fxLayoutAlign="start center" class="full-width">
-          <div fxFlex="116px">{{scan.timestamp | date:'MMM d, yyy'}}</div>
-          <div>
-            <div class="status">{{scan.label}}</div>
-          </div>
-        <div *ngIf="test.status === 'positive'" fxFlex="1 1 100%" fxLayout="row" fxLayoutAlign="end center">
-            <button mat-mini-fab color="primary" (click)="announce(test)">
-              <mat-icon>wifi</mat-icon>
-            </button>
-          </div>
-        </div>
-      </mat-list-item>
-    </mat-list> -->
   </div>
 </div>
+
+
+
+<!--
+
+  <div class="scan-body" fxLayout="column" fxLayoutGap="16px">
+    <button *ngIf="!(isScanning$ | async)" mat-raised-button color="primary" (click)="scan()" class="scan-button" [disabled]="!(deviceId$ | async)">Scan</button>
+    <button mat-raised-button color="primary" (click)="cancel()" class="scan-button" *ngIf="isScanning$ | async">Cancel</button>
+  </div>
+
+
+-->

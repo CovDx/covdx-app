@@ -1,0 +1,41 @@
+<div class="summary-wrapper" fxLayout="column" fxLayoutAlign="stretch">
+  <mat-toolbar color="primary" fxS>
+    <span class="title-center">Summary</span>
+  </mat-toolbar>
+  <div fxLayout="column" fxLayoutGap="16px"  class="body-content">
+    <div *ngIf="hasResult$ | async" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="6px">
+      <mat-icon>notifications_active</mat-icon>
+      <div>Please click the notification to view your result.</div>
+    </div>
+    <div *ngIf="!(hasResult$ | async)" fxLayout="row" fxLayoutAlign="center">
+      <a class="centered-text">Add a new sample by tapping the plus below.</a>
+    </div>
+    <!--<mat-list>
+      <div mat-subheader>Test History</div>
+      <mat-list-item *ngFor="let scan of scans$ | async">
+        <div fxLayout="row" fxLayoutAlign="start center" class="full-width">
+          <div fxFlex="116px">{{scan.timestamp | date:'MMM d, yyy'}}</div>
+          <div>
+            <div class="status">{{scan.label}}</div>
+          </div>
+        <div *ngIf="test.status === 'positive'" fxFlex="1 1 100%" fxLayout="row" fxLayoutAlign="end center">
+            <button mat-mini-fab color="primary" (click)="announce(test)">
+              <mat-icon>wifi</mat-icon>
+            </button>
+          </div>
+        </div>
+      </mat-list-item>
+    </mat-list> -->
+  </div>
+  <mat-toolbar class="navigation-bar" fxLayoutAlign="space-around center">
+    <!--<button mat-icon-button>
+      <mat-icon>home</mat-icon>
+    </button>-->
+    <button mat-fab color="accent" (click)="prescanner()" [disabled]="!(deviceId$ | async)">
+      <mat-icon>add</mat-icon>
+    </button>
+    <!--<button mat-icon-button>
+      <mat-icon>settings</mat-icon>
+    </button>-->
+  </mat-toolbar>
+</div>

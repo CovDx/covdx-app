@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule } from '@angular/forms';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
@@ -24,6 +25,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     FlexLayoutModule,
     MatButtonModule,
     MatToolbarModule,
+    MatMenuModule,
     MatDividerModule,
     MatListModule,
     MatProgressSpinnerModule,
@@ -38,6 +40,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatButtonModule,
     FlexLayoutModule,
     MatToolbarModule,
+    MatMenuModule,
     MatDividerModule,
     MatListModule,
     MatProgressSpinnerModule,

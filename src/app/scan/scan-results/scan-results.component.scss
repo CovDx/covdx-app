@@ -1,3 +1,7 @@
+@import '../../../../blue-grey-theme.scss';
+$primary: map-get($custom-theme, primary);
+$warn: map-get($custom-theme, warn);
+
 .scanner-result-content {
   height: 100%;
 }
@@ -24,4 +28,40 @@
   font-size: 18px;
   margin-top: 18px;
   margin-bottom: 18px;
+}
+
+.results-wrapper {
+  height: 100%;
+}
+
+.results-content {
+  text-align: center;
+  padding: 10px 10px 10px 10px;
+}
+.navigation-bar {
+  background-color: transparent;
+}
+
+.result-circle {
+  width: 175px;
+  height: 175px;
+  border-radius: 50%;
+  margin: 15px 0 15px 0;
+}
+
+.result-negative {
+  background-color: mat-color($primary);
+}
+
+.result-positive {
+  background-color: mat-color($warn);
+}
+
+.title-center {
+  margin: 0 auto;
+}
+
+.result-circle-text {
+  color: white;
+  font-weight: 500;
 }

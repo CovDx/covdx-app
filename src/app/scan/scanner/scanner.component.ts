@@ -6,12 +6,11 @@ import { Plugins, PushNotificationToken, PushNotificationActionPerformed, PushNo
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ScanService } from '../../services';
 import { ScanHistory } from '../../models';
-import { environment } from '../../../environments/environment';
 import cmbScanner from 'cmbsdk-cordova/www/CmbScanner';
 import { FCM } from "capacitor-fcm";
 
 const fcm = new FCM();
-const { Device, PushNotifications, App } = Plugins;
+const { Device, PushNotifications } = Plugins;
 
 @Component({
   selector: 'cov-scanner',
@@ -40,21 +39,20 @@ export class ScannerComponent implements OnInit {
         this.deviceType = 'android';
       } else {
         this.deviceType = info.platform;
+        app.push();
+        app.loadScanner();
       }
-      app.push();
     });
-    App.addListener('appStateChange', state => {
-      app.checkNotifications();
-    });
-    this.checkNotifications();
-    console.log('starting scanner config');
+  }
+
+  loadScanner() {
+    let app = this;
     cmbScanner.setCameraMode(0);
     cmbScanner.enableImageGraphics(true);
-    cmbScanner.setPreviewContainerPositionAndSize(0,0,100,80);
+    cmbScanner.setPreviewContainerPositionAndSize(0,0,100,70);
     cmbScanner.setPreviewOptions(cmbScanner.CONSTANTS.PREVIEW_OPTIONS.DEFAULTS);
     cmbScanner.setPreviewOverlayMode(cmbScanner.CONSTANTS.PREVIEW_OVERLAY_MODE.OM_CMB);
     cmbScanner.loadScanner("DEVICE_TYPE_MOBILE_DEVICE",function(result){
-      console.log(`scanner load: ${result}`);
       cmbScanner.connect().then(result => {
         if(!result) {
           console.error('scanner failed to connect')
@@ -63,6 +61,7 @@ export class ScannerComponent implements OnInit {
           cmbScanner.setSymbologyEnabled("SYMBOL.DATAMATRIX", true).then(function(result) {
             if (result.status) {
               console.log('Symbol Matric configured');
+              app.scan();
             } else {
               alert('Failed to configure symbol matrix');
             }
@@ -71,11 +70,10 @@ export class ScannerComponent implements OnInit {
       });
     });
     cmbScanner.setResultCallback(function(result){
-      //alert('result');
       if(result && result.readResults && result.readResults.length > 0){
         result.readResults.forEach(function (item, index){
             if (item.goodRead == true) {
-              app.newScan(item.readString);
+              this.newScan(item.readString);
               console.log('success: ' + item.symbologyString + ' ' + item.readString);
             }
             else{
@@ -85,27 +83,6 @@ export class ScannerComponent implements OnInit {
     }});
   }
 
-  checkNotifications() {
-    PushNotifications.getDeliveredNotifications().then(notifications => {
-      console.log('Checkout existing notifications ' + JSON.stringify(notifications));
-      const scan: ScanHistory = notifications.notifications.map(x => x.data)[0]
-      if (scan.id) {
-        PushNotifications.removeAllDeliveredNotifications();
-        console.log('New scan found ' + JSON.stringify(scan));
-        this.newResult(scan);
-      } else {
-        this.zone.run(() => {
-          this.hasResult$.next(true);
-        });
-      }
-    });
-  }
-  newResult(scan: ScanHistory) {
-    this.scanService.historyRecieved(scan);
-    this.zone.run(() => {
-      this.router.navigateByUrl('scan-results');
-    });
-  }
   newScan(barcode: string) {
     this.scanService.save({barcode, deviceId: this.deviceId$.getValue(), deviceType: this.deviceType}).subscribe(scanRes => {
       this.zone.run(() => {
@@ -137,10 +114,14 @@ export class ScannerComponent implements OnInit {
     });
   }
 
-  stop() {
-    this.isScanning$.next(false);
-    cmbScanner.stopScanning();
+  cancel() {
+    if (this.isPhone) {
+      this.isScanning$.next(false);
+      cmbScanner.stopScanning();
+    }
+    this.router.navigateByUrl('/summary')
   }
+
   scan() {
     if (!this.isPhone) {
       this.newScan(`test-barcode-${Math.random()}`);
@@ -169,13 +150,5 @@ export class ScannerComponent implements OnInit {
         });
       });
     });
-
-    PushNotifications.addListener('pushNotificationActionPerformed', (notification: PushNotificationActionPerformed) => {
-      console.log('Push action performed: ' + JSON.stringify(notification.notification));
-      this.newResult(notification.notification.data);
-    });
-    PushNotifications.addListener('pushNotificationReceived', notification => {
-      this.newResult(notification.data);
-    })
   }
 }

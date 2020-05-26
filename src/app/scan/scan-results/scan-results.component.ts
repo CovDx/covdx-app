@@ -5,7 +5,7 @@ import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'cov-scan-results',
+  selector: 'scan-results',
   templateUrl: './scan-results.component.html',
   styleUrls: ['./scan-results.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -41,7 +41,10 @@ export class ScanResultsComponent implements OnInit {
   }
 
   scanner() {
-    this.router.navigateByUrl('scanner');
+    this.router.navigateByUrl('/scanner');
   }
 
+  exit() {
+    this.router.navigateByUrl('/summary');
+  }
 }
