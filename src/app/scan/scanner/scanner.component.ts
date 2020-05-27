@@ -95,8 +95,9 @@ export class ScannerComponent implements OnInit {
           message: 'If you plan on submitting multiple tests, enter a label for this sample.'
         }).then(result => {
           scanItem.tag = result.value || scanItem.tag;
-          this.scanService.saveScan(scanItem);
-          this.cancel();
+          this.scanService.saveScan(scanItem).subscribe(() => {
+            this.cancel();
+          })
         });
       })
     }, res => {

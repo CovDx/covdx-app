@@ -3,7 +3,7 @@ import { environment } from '../../environments/environment'
 import { HttpClient } from '@angular/common/http';
 import { Plugins } from '@capacitor/core';
 import { ScanListItem, ScanResult } from '../models';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, from } from 'rxjs';
 
 const { Storage } = Plugins;
 
@@ -33,12 +33,12 @@ export class ScanService {
 
   saveScanList(scans: ScanListItem[]) {
     const scanStr = JSON.stringify(scans);
-    Storage.set({key: 'scans', value: scanStr});
+    return from(Storage.set({key: 'scans', value: scanStr}));
   }
 
   saveScan(scan: ScanListItem) {
     console.log("starting local save");
-    Storage.get({key: 'scans'}).then(scans => {
+    return from(Storage.get({key: 'scans'}).then(scans => {
       let oldScans = JSON.parse(scans.value);
       if (oldScans != null) {
         oldScans = oldScans.filter(x => x.id !== scan.id);
@@ -46,8 +46,8 @@ export class ScanService {
         oldScans = [];
       }
       oldScans.push(scan);
-      this.saveScanList(oldScans);
+      from(this.saveScanList(oldScans));
       console.log('Updated Scan list to: ', oldScans)
-    });
+    }));
   }
 }
