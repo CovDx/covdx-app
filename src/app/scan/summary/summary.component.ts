@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { Plugins, PushNotificationToken, PushNotificationActionPerformed } from '@capacitor/core';
 import { ScanService } from '../../services';
-import { ScanListItem } from '../../models';
+import { ScanListItem, ScanResult } from '../../models';
 import { FCM } from "capacitor-fcm";
 
 const fcm = new FCM();
@@ -20,33 +20,22 @@ export class SummaryComponent implements OnInit {
   private isPhone = true;
   deviceId$ = new BehaviorSubject<string>(null);
   hasResult$ = new BehaviorSubject<boolean>(false);
-  private deviceType: string;
   scans$ = new BehaviorSubject<ScanListItem[]>([]);
   constructor(private zone: NgZone,
               private scanService: ScanService,
               private router: Router) { }
 
   ngOnInit(): void {
-    let app = this;
-    Device.getInfo().then(info => {
-      this.isPhone = info.platform !== 'web';
-      if (!this.isPhone) {
-        this.deviceId$.next('web-test-device');
-        this.deviceType = 'android';
-      } else {
-        this.deviceType = info.platform;
-        app.push();
-      }
-    });
     Storage.get({key: 'scans'}).then(scans => {
       this.scans$.next(JSON.parse(scans.value) || []);
     });
+    this.push();
   }
 
   checkNotifications() {
     PushNotifications.getDeliveredNotifications().then(notifications => {
       console.log('Checkout existing notifications ' + JSON.stringify(notifications));
-      const scan: ScanListItem = notifications.notifications.map(x => x.data)[0]
+      const scan: ScanResult = notifications.notifications.map(x => x.data)[0]
       if (scan.id) {
         PushNotifications.removeAllDeliveredNotifications();
         console.log('New scan found ' + JSON.stringify(scan));
@@ -59,10 +48,27 @@ export class SummaryComponent implements OnInit {
     });
   }
 
-  newResult(scan: ScanListItem) {
-    this.scanService.historyRecieved(scan);
+  newResult(scan: ScanResult) {
+    console.log('summary result: ' + JSON.stringify(scan));
+    scan.acknowledged = false;
+    let scanItem = this.scans$.getValue().filter(x => x.id === scan.id)[0];
+    console.log('summary item: ' + JSON.stringify(scanItem));
+    if (scanItem) {
+      scanItem.status = 'result';
+      scanItem.result = scan;
+      this.scanService.saveScanList(this.scans$.getValue()).subscribe(() => {
+        this.scanService.historyRecieved(scanItem);
+        this.zone.run(() => {
+          this.router.navigateByUrl('scan-results');
+        });
+      });
+    }
+  }
+
+  resultClick(scanItem: ScanListItem) {
+    this.scanService.historyRecieved(scanItem);
     this.zone.run(() => {
-      this.router.navigateByUrl('/scan-results');
+      this.router.navigateByUrl('scan-results');
     });
   }
 

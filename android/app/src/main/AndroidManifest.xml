@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.covdx.family">
+    package="com.jobycmta.app">
 
     <application
         android:allowBackup="true"
@@ -14,7 +14,7 @@
         <meta-data android:name="MX_MOBILE_LICENSE" android:value="gAUQpCyTizIWSxSHamO+NU7qV60bKcWTeI0my4avYE0="/>
         <activity
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|smallestScreenSize|screenLayout|uiMode"
-            android:name="org.covdx.family.MainActivity"
+            android:name="com.jobycmta.app.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBarLaunch"
             android:launchMode="singleTask">

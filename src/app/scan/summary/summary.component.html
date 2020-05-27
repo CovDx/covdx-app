@@ -9,7 +9,7 @@
     </div>
     <mat-selection-list *ngIf="(scans$ | async).length != 0" #tests [multiple]=false>
       <div mat-subheader>Test History</div>
-      <mat-list-option (click)="newResult(scan)" *ngFor="let scan of scans$ | async" color="accent" fxLayoutGap='10px'>
+      <mat-list-option (click)="resultClick(scan)" *ngFor="let scan of scans$ | async" color="accent" fxLayoutGap='10px'>
         <mat-icon *ngIf="scan.status === 'pending'" matListIcon>autorenew</mat-icon>
         <mat-icon *ngIf="scan.status != 'pending'" matListIcon>checkmark</mat-icon>
         <div mat-line>{{scan.tag}}</div>

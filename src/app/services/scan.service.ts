@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Plugins } from '@capacitor/core';
 import { ScanListItem, ScanResult } from '../models';
 import { BehaviorSubject, Observable, from } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
 
 const { Storage } = Plugins;
 
@@ -20,6 +21,7 @@ export class ScanService {
   }
 
   historyRecieved(scan: ScanListItem) {
+    this.saveScan(scan);
     this.scanResults$.next(scan);
   }
 
@@ -37,17 +39,13 @@ export class ScanService {
   }
 
   saveScan(scan: ScanListItem) {
-    console.log("starting local save");
+    console.log('saving scan ' + JSON.stringify(scan));
     return from(Storage.get({key: 'scans'}).then(scans => {
-      let oldScans = JSON.parse(scans.value);
-      if (oldScans != null) {
-        oldScans = oldScans.filter(x => x.id !== scan.id);
-      } else {
-        oldScans = [];
-      }
+      const oldScans = JSON.parse(scans.value).filter(x => x.id !== scan.id);
       oldScans.push(scan);
-      from(this.saveScanList(oldScans));
-      console.log('Updated Scan list to: ', oldScans)
-    }));
+      return oldScans;
+    })).pipe(
+      flatMap(x => this.saveScanList(x))
+    );
   }
 }

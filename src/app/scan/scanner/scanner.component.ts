@@ -22,7 +22,7 @@ export class ScannerComponent implements OnInit {
   private isPhone = true;
   editingTag: string;
   editingStatus: string;
-  deviceId$ = new BehaviorSubject<string>(null);
+  deviceId: string = null;
   private deviceType: string;
   constructor(private zone: NgZone,
               private scanService: ScanService,
@@ -34,11 +34,15 @@ export class ScannerComponent implements OnInit {
     Device.getInfo().then(info => {
       this.isPhone = info.platform !== 'web';
       if (!this.isPhone) {
-        this.deviceId$.next('web-test-device');
+        this.deviceId = 'web-test-device';
         this.deviceType = 'android';
       } else {
         this.deviceType = info.platform;
       }
+    });
+    fcm.getToken().then(token => {
+      console.log('FCM token: ' + token.token);
+      this.deviceId = token.token;
     });
     console.log('starting scanner config');
     cmbScanner.setCameraMode(0);
@@ -86,7 +90,7 @@ export class ScannerComponent implements OnInit {
       result: null
     };
     let app = this;
-    this.scanService.save({barcode, deviceId: this.deviceId$.getValue(), deviceType: this.deviceType}).subscribe(scanRes => {
+    this.scanService.save({barcode, deviceId: this.deviceId, deviceType: this.deviceType}).subscribe(scanRes => {
       scanItem.id = scanRes.id;
       scanItem.status = 'pending';
       this.zone.run(() => {
@@ -133,8 +137,15 @@ export class ScannerComponent implements OnInit {
     if (!this.isPhone) {
       this.newScan(`test-barcode-${Math.random()}`);
     } else {
-      cmbScanner.startScanning();
-      cmbScanner.sendCommand('SET CAMERA.ZOOM 1');
+      if (this.deviceId) {
+        cmbScanner.startScanning();
+        cmbScanner.sendCommand('SET CAMERA.ZOOM 1');
+      } else {
+        Modals.alert({
+          title: 'Push Notifications',
+          message: 'Please enable push notifications so you can recieve your result'
+        })
+      }
     }
   }
 }

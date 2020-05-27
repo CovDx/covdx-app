@@ -17,11 +17,14 @@ export class ScanResultsComponent implements OnInit {
   constructor(private scanService: ScanService, private router: Router) { }
 
   ngOnInit() {
+    console.warn("INIT");
     this.scanService.getResults().subscribe(scan => {
       console.log(scan);
-      if (scan == null || scan.id == null) {
+      if (!scan || !scan.id) {
+        console.error(`Invalid result ${JSON.stringify(scan)}`);
         this.errorScan$.next(true);
       } else {
+        console.info(`Result ${JSON.stringify(scan)}`);
         this.scan$.next(scan);
         this.errorScan$.next(false);
         if (scan.result && !scan.result.acknowledged) {
@@ -43,7 +46,7 @@ export class ScanResultsComponent implements OnInit {
       this.ackLoadingState$.next('success');
       const scan = this.scan$.getValue();
       scan.result.acknowledged = true;
-      this.scanService.saveScan(scan);
+      this.scanService.saveScan(scan).subscribe();
     }, err => {
       console.log(`An error occured durning ack: ${JSON.stringify(err)}`);
       this.ackLoadingState$.next('error');
