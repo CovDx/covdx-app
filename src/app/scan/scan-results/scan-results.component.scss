@@ -1,27 +1,35 @@
-.scanner-result-content {
+@import '../../../../blue-grey-theme.scss';
+$primary: map-get($custom-theme, primary);
+$warn: map-get($custom-theme, warn);
+
+.results-wrapper {
   height: 100%;
 }
 
-.body-result-content {
-  height: calc(100% - 56px);
-  padding: 16px 8px 8px 8px;
+.results-card {
+  width: 80%;
+  max-width: 500px;
+  margin: auto;
 }
 
-.status {
-  font-weight: bolder;
+.result-element {
+  padding: 60px 20px 60px 20px;
+  text-align: center;
 }
 
-.status-positive_unannounced {
-  color: #dd2222;
+.result-element h1 {
+  margin-bottom: 0;
 }
 
-.status-negative {
-  color: #33dd33;
+.result-negative {
+  background-image: linear-gradient(to right, #26AAE5 , #1875EE);
 }
 
-.scan-button {
-  height: 64px;
-  font-size: 18px;
-  margin-top: 18px;
-  margin-bottom: 18px;
+.result-positive {
+  background-image: linear-gradient(to right, #9A0207, #CC2626);
+}
+
+.result-text {
+  color: white;
+  font-weight: bold;
 }

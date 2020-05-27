@@ -8,7 +8,7 @@ import { ScanModule } from './scan';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
     BrowserModule,

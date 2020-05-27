@@ -2,16 +2,15 @@ import { Component, OnInit, ChangeDetectionStrategy, NgZone } from '@angular/cor
 import { Router } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Plugins, PushNotificationToken, PushNotificationActionPerformed, PushNotificationDeliveredList } from '@capacitor/core';
+import { Plugins, PushNotificationToken, PushNotificationActionPerformed } from '@capacitor/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { ScanService } from '../../services';
-import { ScanHistory } from '../../models';
-import { environment } from '../../../environments/environment';
+import { ScanResult, ScanListItem } from '../../models';
 import cmbScanner from 'cmbsdk-cordova/www/CmbScanner';
 import { FCM } from "capacitor-fcm";
 
 const fcm = new FCM();
-const { Device, PushNotifications, App } = Plugins;
+const { Device, Modals } = Plugins;
 
 @Component({
   selector: 'cov-scanner',
@@ -21,11 +20,10 @@ const { Device, PushNotifications, App } = Plugins;
 })
 export class ScannerComponent implements OnInit {
   private isPhone = true;
+  editingTag: string;
+  editingStatus: string;
   deviceId$ = new BehaviorSubject<string>(null);
-  isScanning$ = new BehaviorSubject<boolean>(false);
-  hasResult$ = new BehaviorSubject<boolean>(false);
   private deviceType: string;
-  scans$ = new BehaviorSubject<ScanHistory[]>([]);
   constructor(private zone: NgZone,
               private scanService: ScanService,
               private snackBar: MatSnackBar,
@@ -41,20 +39,14 @@ export class ScannerComponent implements OnInit {
       } else {
         this.deviceType = info.platform;
       }
-      app.push();
     });
-    App.addListener('appStateChange', state => {
-      app.checkNotifications();
-    });
-    this.checkNotifications();
     console.log('starting scanner config');
     cmbScanner.setCameraMode(0);
     cmbScanner.enableImageGraphics(true);
-    cmbScanner.setPreviewContainerPositionAndSize(0,0,100,80);
+    cmbScanner.setPreviewContainerPositionAndSize(0,0,100,60);
     cmbScanner.setPreviewOptions(cmbScanner.CONSTANTS.PREVIEW_OPTIONS.DEFAULTS);
     cmbScanner.setPreviewOverlayMode(cmbScanner.CONSTANTS.PREVIEW_OVERLAY_MODE.OM_CMB);
     cmbScanner.loadScanner("DEVICE_TYPE_MOBILE_DEVICE",function(result){
-      console.log(`scanner load: ${result}`);
       cmbScanner.connect().then(result => {
         if(!result) {
           console.error('scanner failed to connect')
@@ -63,6 +55,7 @@ export class ScannerComponent implements OnInit {
           cmbScanner.setSymbologyEnabled("SYMBOL.DATAMATRIX", true).then(function(result) {
             if (result.status) {
               console.log('Symbol Matric configured');
+              app.scan();
             } else {
               alert('Failed to configure symbol matrix');
             }
@@ -71,7 +64,6 @@ export class ScannerComponent implements OnInit {
       });
     });
     cmbScanner.setResultCallback(function(result){
-      //alert('result');
       if(result && result.readResults && result.readResults.length > 0){
         result.readResults.forEach(function (item, index){
             if (item.goodRead == true) {
@@ -85,32 +77,26 @@ export class ScannerComponent implements OnInit {
     }});
   }
 
-  checkNotifications() {
-    PushNotifications.getDeliveredNotifications().then(notifications => {
-      console.log('Checkout existing notifications ' + JSON.stringify(notifications));
-      const scan: ScanHistory = notifications.notifications.map(x => x.data)[0]
-      if (scan.id) {
-        PushNotifications.removeAllDeliveredNotifications();
-        console.log('New scan found ' + JSON.stringify(scan));
-        this.newResult(scan);
-      } else {
-        this.zone.run(() => {
-          this.hasResult$.next(true);
-        });
-      }
-    });
-  }
-  newResult(scan: ScanHistory) {
-    this.scanService.historyRecieved(scan);
-    this.zone.run(() => {
-      this.router.navigateByUrl('scan-results');
-    });
-  }
   newScan(barcode: string) {
+    let scanItem: ScanListItem = {
+      id: null,
+      timestamp: new Date(Date.now()).toString(),
+      tag: 'New Scan',
+      status: 'saving',
+      result: null
+    };
+    let app = this;
     this.scanService.save({barcode, deviceId: this.deviceId$.getValue(), deviceType: this.deviceType}).subscribe(scanRes => {
+      scanItem.id = scanRes.id;
+      scanItem.status = 'pending';
       this.zone.run(() => {
-        this.snackBar.open('Your scan has been submitted successfully', 'OK', {
-          verticalPosition: 'bottom'
+        Modals.prompt({
+          title: 'Label',
+          message: 'If you plan on submitting multiple tests, enter a label for this sample.'
+        }).then(result => {
+          scanItem.tag = result.value || scanItem.tag;
+          this.scanService.saveScan(scanItem);
+          this.cancel();
         });
       })
     }, res => {
@@ -126,56 +112,28 @@ export class ScannerComponent implements OnInit {
       } else {
         message = 'An error has occured while uploading scan';
       }
-      this.zone.run(() => {
-        this.snackBar.open(message, 'OK', {
-          verticalPosition: 'bottom'
-        });
-      })
-    });
-    this.zone.run(() => {
-      this.isScanning$.next(false);
+      Modals.alert({
+        title: 'Duplicate',
+        message: 'You already scanned that barcode'
+      }).then(() => {
+        app.scan();
+      });
     });
   }
 
-  stop() {
-    this.isScanning$.next(false);
-    cmbScanner.stopScanning();
+  cancel() {
+    if (this.isPhone) {
+      cmbScanner.stopScanning();
+    }
+    this.router.navigateByUrl('/summary')
   }
+
   scan() {
     if (!this.isPhone) {
       this.newScan(`test-barcode-${Math.random()}`);
     } else {
-      this.isScanning$.next(true);
       cmbScanner.startScanning();
       cmbScanner.sendCommand('SET CAMERA.ZOOM 1');
     }
-  }
-
-  push() {
-    PushNotifications.requestPermission().then( result => {
-      if (result.granted) {
-        console.info('Push notification permission granted');
-        PushNotifications.register();
-      } else {
-        alert("Please enable notifications to scan a test and recieve your results");
-      }
-    });
-    PushNotifications.addListener('registration', (token: PushNotificationToken) => {
-      console.log('Push registration success, token: ' + token.value);
-      fcm.getToken().then(token => {
-        console.log('FCM token: ' + token.token);
-        this.zone.run(() => {
-          this.deviceId$.next(token.token);
-        });
-      });
-    });
-
-    PushNotifications.addListener('pushNotificationActionPerformed', (notification: PushNotificationActionPerformed) => {
-      console.log('Push action performed: ' + JSON.stringify(notification.notification));
-      this.newResult(notification.notification.data);
-    });
-    PushNotifications.addListener('pushNotificationReceived', notification => {
-      this.newResult(notification.data);
-    })
   }
 }

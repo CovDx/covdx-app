@@ -1,0 +1,62 @@
+@import '../../../../blue-grey-theme.scss';
+$primary: map-get($custom-theme, primary);
+
+.status {
+  font-weight: bold;
+}
+.saving-status {
+  color: #5959fa;
+}
+
+.pending-status {
+  color: #666666;
+}
+
+.negative-status {
+  color: #00aa00;
+}
+
+.inconclusive-status {
+  color: #999900;
+}
+
+.positive-status {
+  color: #dd0000;
+}
+
+.history {
+  font-size:8px;
+}
+
+.summary-wrapper {
+  height: 100%;
+}
+
+.body-content {
+  padding-top: 20px;
+  margin-bottom: 25;
+  overflow: auto;
+}
+
+.scan-button {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+.centered-text {
+  text-align: center;
+}
+
+.scan-info {
+  color: white;
+  text-align: left;
+}
+
+.scan-info h2 {
+  margin: 0;
+}
+
+.mat-main {
+  color: white;
+}
