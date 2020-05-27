@@ -4,7 +4,15 @@
 }
 
 .scanner-placeholder {
-  height: 70%;
+  height: 65%;
+  flex:1;
+}
+
+.scan-body {
+  position: absolute;
+  max-height: 35%;
+  bottom: 0;
+  padding: 0 20px 20px 20px;
 }
 
 .scan-toolbar {
@@ -12,15 +20,9 @@
 }
 
 .scan-tips {
-  background-color: white;
   overflow: auto;
   align-items: center;
   text-align: center;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  margin-top: -1.25em;
-  flex: 1;
-  padding: 20px;
 }
 
 .scan-tips h1 {
@@ -28,7 +30,6 @@
 }
 
 .scan-tips ol{
-  background-color: white;
   overflow: auto;
   align-items: center;
   text-align: left;

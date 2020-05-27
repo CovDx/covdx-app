@@ -43,7 +43,7 @@ export class ScannerComponent implements OnInit {
     console.log('starting scanner config');
     cmbScanner.setCameraMode(0);
     cmbScanner.enableImageGraphics(true);
-    cmbScanner.setPreviewContainerPositionAndSize(0,0,100,70);
+    cmbScanner.setPreviewContainerPositionAndSize(0,0,100,60);
     cmbScanner.setPreviewOptions(cmbScanner.CONSTANTS.PREVIEW_OPTIONS.DEFAULTS);
     cmbScanner.setPreviewOverlayMode(cmbScanner.CONSTANTS.PREVIEW_OVERLAY_MODE.OM_CMB);
     cmbScanner.loadScanner("DEVICE_TYPE_MOBILE_DEVICE",function(result){
@@ -92,7 +92,7 @@ export class ScannerComponent implements OnInit {
       this.zone.run(() => {
         Modals.prompt({
           title: 'Label',
-          message: 'Please label your scan'
+          message: 'If you plan on submitting multiple tests, enter a label for this sample.'
         }).then(result => {
           scanItem.tag = result.value || scanItem.tag;
           this.scanService.saveScan(scanItem);

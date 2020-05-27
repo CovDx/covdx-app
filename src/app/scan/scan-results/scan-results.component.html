@@ -1,34 +1,30 @@
-<div class="results-wrapper" fxLayout="column" fxLayoutAlign="space-between center">
-  <mat-toolbar color="primary" fxS>
-    <span class="title-center">Results</span>
+<div class="results-wrapper" fxLayout="column" fxLayoutAlign="space-between">
+  <mat-toolbar color="primary">
+    <span>Test Results</span>
   </mat-toolbar>
-  <div class="results-content" fxLayout="column" fxLayoutAlign="center">
-    <div *ngIf="errorScan$ | async">
-      <a>Unable to retrieve your results, please click the notification you received or try again later.</a>
+  <mat-card *ngIf="scan$ | async as scan" class="results-card">
+    <mat-card-header>
+      <mat-card-title>{{scan.tag}}</mat-card-title>
+      <mat-card-subtitle>{{scan.timestamp | date:'MM/d/yyyy'}}</mat-card-subtitle>
+    </mat-card-header>
+    <div mat-card-image class="result-element" [ngClass]="[(scan.result != null && scan.result.label == 'positive') ? 'result-positive' : 'result-negative']" fxLayout="column">
+      <h1 *ngIf="scan.result != null" class="result-text">{{scan.result.label}}</h1>
+      <h1 *ngIf="scan.result == null" class="result-text">Pending Result</h1>
     </div>
-    <div *ngIf="scan$ | async as scan" fxLayout="column">
-      <a>{{scan.timestamp | date:'fullDate'}}</a>
-      <div class="result-circle result-{{scan.result.label}}" fxLayout="column" fxLayoutAlign="center">
-        <a class="result-circle-text">Test Result</a>
-        <h1 *ngIf="scan.result.label != 'pending'" class="result-circle-text">{{scan.result.label}}</h1>
-        <h1 *ngIf="scan.result.label === 'pending'" class="result-circle-text">Pending</h1>
+    <mat-card-content>
+      <p *ngIf="!scan.result" >Your results may take some time to process. Make sure that you look for and click on the notification alerting you that your results are available.</p>
+      <div *ngIf="scan.result && scan.result.label == 'positive' && ackLoadingState$ | async as state">
+        <p>Contact your doctor immediately.</p>
+        <p>Please acknowlege your results to stop recieving notifications</p>
       </div>
-      <a *ngIf="scan.result.label === 'positive'">You're good to go!</a>
-      <a *ngIf="scan.result.label === 'negative'">Contact your doctor immediately.</a>
-      <div *ngIf="ackLoadingState$ | async as state">
-        <div *ngIf="state === 'start' || state === 'error'" fxLayout="column">
-          <button mat-raised-button color="primary" (click)="ack()" class="scan-button" [disabled]="state  == 'loading'">Acknowledge</button>
-          <div *ngIf="state  === 'start'"> Please acknowlege to stop recieving notifications</div>
-          <div *ngIf="state === 'error'">An error occured. Please try again.</div>
-        </div>
-        <div *ngIf="state === 'success'" fxLayout="column">Acknowlege successful</div>
-        <button mat-button color="primary" (click)="scanner()" class="scan-button" *ngIf="state === 'success'">New Scan</button>
+      <div *ngIf="scan.result && scan.result.label == 'negative' && ackLoadingState$ | async as state">
+        <p>You're good to go!</p>
+        <p>Please acknowlege your results to stop recieving notifications</p>
       </div>
-    </div>
-  </div>
-  <mat-toolbar class="navigation-bar" fxLayoutAlign="space-around center">
-    <button mat-button (click)="exit()">
-      Okay
-    </button>
-  </mat-toolbar>
+    </mat-card-content>
+    <mat-card-actions *ngIf="ackLoadingState$ | async as state">
+      <button mat-button (click)="exit()">OKAY</button>
+      <button mat-raised-button color="primary" *ngIf="state == 'awaiting'" (click)="ack()" [disabled]="state == 'loading'">ACKNOWLEDGE</button>
+    </mat-card-actions>
+  </mat-card>
 </div>

@@ -1,20 +1,6 @@
 @import '../../../../blue-grey-theme.scss';
 $primary: map-get($custom-theme, primary);
 
-.container {
-  padding: 16px 8px 8px 8px;
-}
-
-.scan-button {
-  height: 64px;
-  font-size: 18px;
-  margin-top: 18px;
-  margin-bottom: 18px;
-}
-.title-center {
-  margin: 0 auto;
-}
-
 .status {
   font-weight: bold;
 }
@@ -52,22 +38,14 @@ $primary: map-get($custom-theme, primary);
   overflow: auto;
 }
 
-.navigation-bar {
-  background-color: transparent;
+.scan-button {
   position: absolute;
-  bottom: 15px;
+  bottom: 20px;
+  right: 20px;
 }
 
 .centered-text {
   text-align: center;
-}
-
-.mat-list-item {
-  margin-bottom: 30px;
-}
-
-.mat-list-item button {
-  width: 100%;
 }
 
 .scan-info {

@@ -1,9 +1,6 @@
-<div class="scan-wrapper" fxLayout="column" fxLayoutAlign="stretch">
+<div class="scan-wrapper" fxLayout="column" fxLayoutAlign="stretch center">
   <div class="scanner-placeholder"></div>
-  <div class="scan-body" fxLayout="column" fxLayoutGap="16px">
-    <mat-toolbar class="scan-toolbar" fxLayoutAlign="space-around center">
-      <button mat-button (click)="cancel()">Cancel</button>
-    </mat-toolbar>
+  <div class="scan-body" fxLayout="column">
     <div class="scan-tips">
       <h1>Tips</h1>
       <a>When the code is recognized, the scan window will disappear. If you're having trouble, try</a>
@@ -12,5 +9,6 @@
         <li>Turning on the flash to provide more light</li>
       </ol>
     </div>
+    <button mat-raised-button (click)="cancel()">Cancel</button>
   </div>
 </div>

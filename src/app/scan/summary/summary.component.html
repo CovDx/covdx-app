@@ -1,41 +1,27 @@
 <div class="summary-wrapper" fxLayout="column" fxLayoutAlign="stretch">
   <mat-toolbar color="primary" fxS>
-    <span class="title-center">Summary</span>
+    <span>Summary</span>
   </mat-toolbar>
   <div fxLayout="column" fxLayoutGap="16px"  class="body-content">
     <div *ngIf="hasResult$ | async" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="6px">
       <mat-icon>notifications_active</mat-icon>
       <div>Please click the notification to view your result.</div>
     </div>
-    <mat-list>
-      <div mat-subheader *ngIf="(scans$ | async).length != 0">Test History</div>
-      <mat-list-item *ngFor="let scan of scans$ | async" color="accent" fxLayoutGap='10px'>
-        <button mat-raised-button (click)="newResult(scan)" color="primary">
-          <div class="scan-item" fxLayout="row" fxLayoutAlign="space-between center">
-            <div class="scan-info" fxLayout="column">
-              <h2>{{scan.tag}}</h2>
-              <a>{{scan.timestamp | date:'MM/d/yyyy'}}</a>
-            </div>
-            <div *ngIf="scan.status === 'pending'">
-              <mat-icon  color="main">autorenew</mat-icon>
-            </div>
-          </div>
-        </button>
-      </mat-list-item>
-    </mat-list>
+    <mat-selection-list *ngIf="(scans$ | async).length != 0" #tests [multiple]=false>
+      <div mat-subheader>Test History</div>
+      <mat-list-option (click)="newResult(scan)" *ngFor="let scan of scans$ | async" color="accent" fxLayoutGap='10px'>
+        <mat-icon *ngIf="scan.status === 'pending'" matListIcon>autorenew</mat-icon>
+        <mat-icon *ngIf="scan.status != 'pending'" matListIcon>checkmark</mat-icon>
+        <div mat-line>{{scan.tag}}</div>
+        <div mat-line> {{scan.timestamp | date:'MM/d/yyyy'}}</div>
+        <mat-divider></mat-divider>
+      </mat-list-option>
+    </mat-selection-list>
     <div *ngIf="!(hasResult$ | async)" fxLayout="row" fxLayoutAlign="center">
-      <a class="centered-text">Add a new sample by tapping the plus below.</a>
+      <a>Add a new sample by tapping the plus below.</a>
     </div>
   </div>
-  <mat-toolbar class="navigation-bar" fxLayoutAlign="space-around center">
-    <!--<button mat-icon-button>
-      <mat-icon>home</mat-icon>
-    </button>-->
-    <button mat-fab color="accent" (click)="prescanner()" [disabled]="!(deviceId$ | async)">
-      <mat-icon>add</mat-icon>
-    </button>
-    <!--<button mat-icon-button>
-      <mat-icon>settings</mat-icon>
-    </button>-->
-  </mat-toolbar>
+  <button class="scan-button" mat-fab color="accent" (click)="prescanner()" [disabled]="!(deviceId$ | async)">
+    <mat-icon>add</mat-icon>
+  </button>
 </div>

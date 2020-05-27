@@ -38,6 +38,13 @@ export class SummaryComponent implements OnInit {
         app.push();
       }
     });
+    let testScan: ScanListItem = {
+      id: '12345678987654321',
+      timestamp: new Date(Date.now()).toString(),
+      tag: 'New Scan',
+      status: 'pending',
+      result: null
+    };
     Storage.get({key: 'scans'}).then(scans => {
       this.scans$.next(JSON.parse(scans.value) || []);
     });
@@ -62,7 +69,7 @@ export class SummaryComponent implements OnInit {
   newResult(scan: ScanListItem) {
     this.scanService.historyRecieved(scan);
     this.zone.run(() => {
-      this.router.navigateByUrl('scan-results');
+      this.router.navigateByUrl('/scan-results');
     });
   }
 

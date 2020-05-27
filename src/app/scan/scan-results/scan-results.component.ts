@@ -19,18 +19,21 @@ export class ScanResultsComponent implements OnInit {
   ngOnInit() {
     this.scanService.getResults().subscribe(scan => {
       console.log(scan);
-      if (!scan || !scan.id || !scan.result || !scan.result.label) {
+      if (scan == null || scan.id == null) {
         this.errorScan$.next(true);
       } else {
         this.scan$.next(scan);
         this.errorScan$.next(false);
-        if(!scan.result.acknowledged) {
-          this.ackLoadingState$.next('start');
-        }else{
+        if (scan.result && !scan.result.acknowledged) {
+          console.log("here");
+          this.ackLoadingState$.next('awaiting');
+        } else if (scan.result && scan.result.acknowledged) {
+          console.log('or here')
           this.ackLoadingState$.next('success');
         }
       }
     });
+
   }
 
   ack() {
