@@ -78,7 +78,7 @@ export class ScannerComponent implements OnInit {
   }
 
   newScan(barcode: string) {
-    const scanItem: ScanListItem = {
+    let scanItem: ScanListItem = {
       id: null,
       timestamp: new Date(Date.now()).toString(),
       tag: 'New Scan',
@@ -89,7 +89,6 @@ export class ScannerComponent implements OnInit {
     this.scanService.save({barcode, deviceId: this.deviceId$.getValue(), deviceType: this.deviceType}).subscribe(scanRes => {
       scanItem.id = scanRes.id;
       scanItem.status = 'pending';
-      this.scanService.saveScan(scanItem)
       this.zone.run(() => {
         Modals.prompt({
           title: 'Label',
@@ -97,7 +96,7 @@ export class ScannerComponent implements OnInit {
         }).then(result => {
           scanItem.tag = result.value || scanItem.tag;
           this.scanService.saveScan(scanItem);
-          this.router.navigateByUrl('');
+          this.cancel();
         });
       })
     }, res => {

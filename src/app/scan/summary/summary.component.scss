@@ -1,3 +1,6 @@
+@import '../../../../blue-grey-theme.scss';
+$primary: map-get($custom-theme, primary);
+
 .container {
   padding: 16px 8px 8px 8px;
 }
@@ -44,7 +47,7 @@
 }
 
 .body-content {
-  padding: 20px 8px 8px 8px;
+  padding-top: 20px;
   margin-bottom: 25;
   overflow: auto;
 }
@@ -57,4 +60,25 @@
 
 .centered-text {
   text-align: center;
+}
+
+.mat-list-item {
+  margin-bottom: 30px;
+}
+
+.mat-list-item button {
+  width: 100%;
+}
+
+.scan-info {
+  color: white;
+  text-align: left;
+}
+
+.scan-info h2 {
+  margin: 0;
+}
+
+.mat-main {
+  color: white;
 }

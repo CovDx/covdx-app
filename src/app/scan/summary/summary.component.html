@@ -7,21 +7,25 @@
       <mat-icon>notifications_active</mat-icon>
       <div>Please click the notification to view your result.</div>
     </div>
+    <mat-list>
+      <div mat-subheader *ngIf="(scans$ | async).length != 0">Test History</div>
+      <mat-list-item *ngFor="let scan of scans$ | async" color="accent" fxLayoutGap='10px'>
+        <button mat-raised-button (click)="newResult(scan)" color="primary">
+          <div class="scan-item" fxLayout="row" fxLayoutAlign="space-between center">
+            <div class="scan-info" fxLayout="column">
+              <h2>{{scan.tag}}</h2>
+              <a>{{scan.timestamp | date:'MM/d/yyyy'}}</a>
+            </div>
+            <div *ngIf="scan.status === 'pending'">
+              <mat-icon  color="main">autorenew</mat-icon>
+            </div>
+          </div>
+        </button>
+      </mat-list-item>
+    </mat-list>
     <div *ngIf="!(hasResult$ | async)" fxLayout="row" fxLayoutAlign="center">
       <a class="centered-text">Add a new sample by tapping the plus below.</a>
     </div>
-    <mat-list>
-      <div mat-subheader>Test History</div>
-      <mat-list-item *ngFor="let scan of scans$ | async">
-        <div fxLayout="row" fxLayoutAlign="start center" class="full-width" fxLayoutGap="8px">
-          <div fxFlex="116px">{{scan.timestamp | date:'MMM d, yyy'}}</div>
-          <div>{{scan.tag}}</div>
-          <div>
-            <div class="status">{{scan.status}}</div>
-          </div>
-        </div>
-      </mat-list-item>
-    </mat-list>
   </div>
   <mat-toolbar class="navigation-bar" fxLayoutAlign="space-around center">
     <!--<button mat-icon-button>

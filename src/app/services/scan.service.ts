@@ -37,10 +37,17 @@ export class ScanService {
   }
 
   saveScan(scan: ScanListItem) {
+    console.log("starting local save");
     Storage.get({key: 'scans'}).then(scans => {
-      const oldScans = JSON.parse(scans.value).filter(x => x.id !== scan.id);
+      let oldScans = JSON.parse(scans.value);
+      if (oldScans != null) {
+        oldScans = oldScans.filter(x => x.id !== scan.id);
+      } else {
+        oldScans = [];
+      }
       oldScans.push(scan);
       this.saveScanList(oldScans);
+      console.log('Updated Scan list to: ', oldScans)
     });
   }
 }

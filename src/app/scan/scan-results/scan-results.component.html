@@ -4,7 +4,7 @@
   </mat-toolbar>
   <div class="results-content" fxLayout="column" fxLayoutAlign="center">
     <div *ngIf="errorScan$ | async">
-      <a>There was an error reading your results, please try again later.</a>
+      <a>Unable to retrieve your results, please click the notification you received or try again later.</a>
     </div>
     <div *ngIf="scan$ | async as scan" fxLayout="column">
       <a>{{scan.timestamp | date:'fullDate'}}</a>

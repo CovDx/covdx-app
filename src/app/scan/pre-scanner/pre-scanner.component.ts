@@ -15,4 +15,8 @@ export class PreScannerComponent implements OnInit {
   scanner() {
     this.router.navigateByUrl('/scanner');
   }
+
+  cancel() {
+    this.router.navigateByUrl('/summary')
+  }
 }
