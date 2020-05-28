@@ -83,5 +83,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+    <key>UISupportedExternalAccessoryProtocols</key>
+    <array>
+        <string>com.cognex.dmcc</string>
+    </array>
 </dict>
 </plist>
