@@ -50,20 +50,24 @@ export class ScannerComponent implements OnInit {
     cmbScanner.setPreviewContainerPositionAndSize(0,0,100,60);
     cmbScanner.setPreviewOptions(cmbScanner.CONSTANTS.PREVIEW_OPTIONS.DEFAULTS);
     cmbScanner.setPreviewOverlayMode(cmbScanner.CONSTANTS.PREVIEW_OVERLAY_MODE.OM_CMB);
+    cmbScanner.setConnectionStateDidChangeOfReaderCallback(connectionState => {
+      if(connectionState == cmbScanner.CONSTANTS.CONNECTION_STATE_CONNECTED){
+        cmbScanner.setSymbologyEnabled("SYMBOL.DATAMATRIX", true).then(function(result) {
+          if (result.status) {
+            console.log('Symbol Matric configured');
+            app.scan();
+          } else {
+            alert('Failed to configure symbol matrix');
+          }
+        })
+      }
+    });
     cmbScanner.loadScanner("DEVICE_TYPE_MOBILE_DEVICE",function(result){
       cmbScanner.connect().then(result => {
         if(!result) {
           console.error('scanner failed to connect')
         } else {
           console.log('scanner connected successfully');
-          cmbScanner.setSymbologyEnabled("SYMBOL.DATAMATRIX", true).then(function(result) {
-            if (result.status) {
-              console.log('Symbol Matric configured');
-              app.scan();
-            } else {
-              alert('Failed to configure symbol matrix');
-            }
-          });
         }
       });
     });
@@ -134,6 +138,7 @@ export class ScannerComponent implements OnInit {
   }
 
   scan() {
+    console.log(`!!!!!!!!!!!!!!!!!! ${this.isPhone}`)
     if (!this.isPhone) {
       this.newScan(`test-barcode-${Math.random()}`);
     } else {
