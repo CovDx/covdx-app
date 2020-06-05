@@ -41,7 +41,12 @@ export class ScanService {
   saveScan(scan: ScanListItem) {
     console.log('saving scan ' + JSON.stringify(scan));
     return from(Storage.get({key: 'scans'}).then(scans => {
-      const oldScans = JSON.parse(scans.value).filter(x => x.id !== scan.id);
+      let oldScans = JSON.parse(scans.value);
+      if(!oldScans) {
+        oldScans = [];
+      } else {
+        oldScans = oldScans.filter(x => x.id !== scan.id);
+      }
       oldScans.push(scan);
       return oldScans;
     })).pipe(
