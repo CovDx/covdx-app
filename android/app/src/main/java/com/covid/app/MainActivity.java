@@ -1,4 +1,4 @@
-package com.jobycmta.app;
+package org.covdx.app;
 
 import android.os.Bundle;
 

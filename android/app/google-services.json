@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:113853660091:android:7632b016b200d81ca4e29e",
         "android_client_info": {
-          "package_name": "com.jobycmta.app"
+          "package_name": "org.covdx.app"
         }
       },
       "oauth_client": [
