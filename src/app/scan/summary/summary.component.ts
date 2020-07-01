@@ -5,6 +5,7 @@ import { Plugins, PushNotificationToken, PushNotificationActionPerformed } from 
 import { ScanService } from '../../services';
 import { ScanListItem, ScanResult } from '../../models';
 import { FCM } from "capacitor-fcm";
+import { Auth } from 'aws-amplify';
 
 const fcm = new FCM();
 const { Device, PushNotifications, App, Storage } = Plugins;
@@ -78,7 +79,7 @@ export class SummaryComponent implements OnInit {
         console.info('Push notification permission granted');
         PushNotifications.register();
       } else {
-        alert("Please enable notifications to scan a test and recieve your results");
+        alert('Please enable notifications to scan a test and recieve your results');
       }
     });
     PushNotifications.addListener('registration', (token: PushNotificationToken) => {
@@ -97,10 +98,18 @@ export class SummaryComponent implements OnInit {
     });
     PushNotifications.addListener('pushNotificationReceived', notification => {
       this.newResult(notification.data);
-    })
+    });
   }
 
   prescanner() {
     this.router.navigateByUrl('/pre-scanner');
+  }
+
+  async signOut() {
+    try {
+      await Auth.signOut();
+    } catch (error) {
+      console.log('error signing out: ', error);
+    }
   }
 }

@@ -1,0 +1,20 @@
+{
+    "dev": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-covdxapp-dev-131043-authRole",
+            "UnauthRoleArn": "arn:aws:iam::753512892967:role/amplify-covdxapp-dev-131043-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::753512892967:role/amplify-covdxapp-dev-131043-authRole",
+            "Region": "us-west-2",
+            "DeploymentBucketName": "amplify-covdxapp-dev-131043-deployment",
+            "UnauthRoleName": "amplify-covdxapp-dev-131043-unauthRole",
+            "StackName": "amplify-covdxapp-dev-131043",
+            "StackId": "arn:aws:cloudformation:us-west-2:753512892967:stack/amplify-covdxapp-dev-131043/f29751a0-bbd6-11ea-9718-0afd1207ca5c",
+            "AmplifyAppId": "d1q45flileccwb"
+        },
+        "categories": {
+            "auth": {
+                "covdxapp4c60e0ab": {}
+            }
+        }
+    }
+}

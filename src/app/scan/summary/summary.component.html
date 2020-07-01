@@ -3,6 +3,9 @@
     <span>Summary</span>
   </mat-toolbar>
   <div fxLayout="column" fxLayoutGap="16px"  class="body-content">
+    <button class="signout-button" mat-fab color="accent" (click)="signOut()">
+      Sign Out
+    </button>
     <div *ngIf="hasResult$ | async" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="6px">
       <mat-icon>notifications_active</mat-icon>
       <div>Please click the notification to view your result.</div>
