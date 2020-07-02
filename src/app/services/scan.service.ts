@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment'
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Plugins } from '@capacitor/core';
 import { ScanListItem, ScanResult } from '../models';
 import { BehaviorSubject, Observable, from } from 'rxjs';
-import { flatMap } from 'rxjs/operators';
-
+import { flatMap, map } from 'rxjs/operators';
+import { Auth } from 'aws-amplify';
 const { Storage } = Plugins;
 
 @Injectable({
@@ -17,7 +17,11 @@ export class ScanService {
 
   save(scan: {barcode: string, deviceId: string, deviceType: string}) {
     console.log(`Saving scan ${environment.apiBase} ${JSON.stringify(scan)}`);
-    return this.http.post<ScanResult>(`${environment.apiBase}api/scans`, scan);
+    return this.setAuthHeader().pipe(
+      flatMap(headers => {
+        return this.http.post<ScanResult>(`${environment.apiBase}api/scans`, scan, {headers})
+      })
+    );
   }
 
   historyRecieved(scan: ScanListItem) {
@@ -30,7 +34,11 @@ export class ScanService {
   }
 
   acknowledge(scanId: string) {
-    return this.http.post(`${environment.apiBase}api/scans/acknowledge`, {scanId});
+    return this.setAuthHeader().pipe(
+      flatMap(headers => {
+        return this.http.post(`${environment.apiBase}api/scans/acknowledge`, {scanId}, {headers})
+      })
+    );
   }
 
   saveScanList(scans: ScanListItem[]) {
@@ -46,6 +54,19 @@ export class ScanService {
       return oldScans;
     })).pipe(
       flatMap(x => this.saveScanList(x))
+    );
+  }
+
+  private setAuthHeader(headers: HttpHeaders = null): Observable<HttpHeaders> {
+    if (!headers) {
+      headers = new HttpHeaders();
+    }
+    return from(Auth.currentSession()).pipe(
+      map(session => {
+        console.log(session.getAccessToken());
+        const token = session.getIdToken().getJwtToken();
+        return headers.set('Authorization', `Bearer ${token}`);
+      })
     );
   }
 }
