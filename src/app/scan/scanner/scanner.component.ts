@@ -55,9 +55,15 @@ export class ScannerComponent implements OnInit {
         cmbScanner.setSymbologyEnabled("SYMBOL.DATAMATRIX", true).then(function(result) {
           if (result.status) {
             console.log('Symbol Matric configured');
-            app.scan();
           } else {
-            alert('Failed to configure symbol matrix');
+            alert('Failed to configure symbol matrix for data matrix');
+          }
+        })
+        cmbScanner.setSymbologyEnabled("SYMBOL.C128", true).then(function(result) {
+          if (result.status) {
+            console.log('Symbol Matric configured');
+          } else {
+            alert('Failed to configure symbol matrix for c128');
           }
         })
       }
@@ -68,6 +74,7 @@ export class ScannerComponent implements OnInit {
           console.error('scanner failed to connect')
         } else {
           console.log('scanner connected successfully');
+          app.scan();
         }
       });
     });
@@ -138,7 +145,6 @@ export class ScannerComponent implements OnInit {
   }
 
   scan() {
-    console.log(`!!!!!!!!!!!!!!!!!! ${this.isPhone}`)
     if (!this.isPhone) {
       this.newScan(`test-barcode-${Math.random()}`);
     } else {
