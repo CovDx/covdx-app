@@ -103,4 +103,9 @@ export class SummaryComponent implements OnInit {
   prescanner() {
     this.router.navigateByUrl('/pre-scanner');
   }
+
+  questionnaire() {
+    this.router.navigateByUrl('/questionnaire');
+  }
+
 }

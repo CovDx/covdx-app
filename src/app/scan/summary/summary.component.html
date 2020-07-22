@@ -21,6 +21,9 @@
       <a>Add a new sample by tapping the plus below.</a>
     </div>
   </div>
+  <button class="quest-button" mat-fab color="accent" (click)="questionnaire()">
+    <mat-icon>content_copy</mat-icon>
+  </button>
   <button class="scan-button" mat-fab color="accent" (click)="prescanner()" [disabled]="!(deviceId$ | async)">
     <mat-icon>add</mat-icon>
   </button>

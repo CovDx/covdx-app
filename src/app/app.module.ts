@@ -15,7 +15,7 @@ import { ScanModule } from './scan';
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    ScanModule
+    ScanModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
