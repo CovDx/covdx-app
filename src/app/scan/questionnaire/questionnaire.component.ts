@@ -35,7 +35,7 @@ export class QuestionnaireComponent implements OnInit {
 
   onSubmit() {
     if (this.myFormGroup.valid) {
-      this.router.navigateByUrl('/scanner');
+      this.router.navigateByUrl('/pre-scanner');
     }
 
   }
