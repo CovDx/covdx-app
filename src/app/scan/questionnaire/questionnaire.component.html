@@ -1,0 +1,96 @@
+<div class="questionnaire-wrapper" fxLayoutAlign="stretch">
+  <div class="body-content" fxLayout="column" fxLayoutAlign="space-between">
+      <form [formGroup]="myFormGroup">
+        <div *ngFor="let form_elem of formTemplate" class="form-group">
+          <div [ngSwitch]="form_elem.type" class="form-group">
+            <div *ngSwitchCase="'label'">
+              <h2>{{form_elem.label}}</h2>
+            </div>
+            <label *ngIf="form_elem.type != 'label'" for="{{form_elem.id}}">
+              {{form_elem.label}} 
+              <span *ngIf="form_elem.required == 'false'" class="text-muted">(Optional)</span>
+            </label>
+            <small *ngIf="form_elem.description" class="form-text text-muted"><br>{{form_elem.description}}</small>
+            <div *ngSwitchCase="'text'">
+              <input
+                type="text"
+                required="{{form_elem.required}}"
+                formControlName="{{form_elem.id}}"
+                id="{{form_elem.id}}" name="form_elem.id"
+                class="form-control"
+                [maxLength]="form_elem.maxLength ? form_elem.maxLength : 524288"
+                placeholder="Enter your {{form_elem.label}}"
+              />
+            </div>
+            <div *ngSwitchCase="'number'">
+              <input 
+                type="number" 
+                required="{{form_elem.required}}" 
+                formControlName="{{form_elem.id}}" 
+                id="{{form_elem.id}}" name="form_elem.id" class="form-control"
+                [maxLength]="form_elem.maxLength ? form_elem.maxLength : 524288"
+                placeholder="Enter your {{form_elem.label}}"
+              />
+            </div>
+            <div *ngSwitchCase="'tel'">
+              <input
+                type="number"
+                required="{{form_elem.required}}"
+                formControlName="{{form_elem.id}}"
+                id="{{form_elem.id}}" name="form_elem.id" class="form-control"
+                [maxLength]="form_elem.maxLength ? form_elem.maxLength : 524288"
+                placeholder="Enter your {{form_elem.label}}"
+              />
+            </div>
+            <div *ngSwitchCase="'date'">
+              <input
+                type="date"
+                required="{{form_elem.required}}"
+                formControlName="{{form_elem.id}}"
+                id="{{form_elem.id}}" name="form_elem.id" class="form-control"
+                [maxLength]="form_elem.maxLength ? form_elem.maxLength : 524288"
+              />
+            </div>
+            <div *ngSwitchCase="'email'">
+              <input
+                type="email"
+                required="{{form_elem.required}}"
+                formControlName="{{form_elem.id}}"
+                id="{{form_elem.id}}" name="form_elem.id" class="form-control"
+                [maxLength]="form_elem.maxLength ? form_elem.maxLength : 524288"
+              />
+            </div>
+            <div *ngSwitchCase="'select'">
+              <select required="{{form_elem.required}}" formControlName="{{form_elem.id}}"  id="{{form_elem.id}}" name="form_elem.id" class="form-control">
+                <option *ngFor="let opt of form_elem.options">
+                  {{opt}}
+                </option>
+              </select>
+            </div>
+            <div *ngIf="myFormGroup.get(form_elem.id).invalid && (myFormGroup.get(form_elem.id).dirty || myFormGroup.get(form_elem.id).touched)" class="text-danger">
+              <div *ngIf="myFormGroup.get(form_elem.id).errors.required">
+                This question is required.
+              </div>
+              <div *ngIf="myFormGroup.get(form_elem.id).errors.minlength">
+                {{form_elem.label}} must be at least {{form_elem.minLength}} characters long.
+              </div>
+              <div *ngIf="myFormGroup.get(form_elem.id).errors.email">
+                {{form_elem.label}} must be a valid email.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!myFormGroup.valid" class="alert alert-danger">
+          The form is incomplete.
+        </div>
+        <div class="form-row btn-toolbar" >
+          <div class="btn-group">
+            <button mat-raised-button (click)="cancel()">Cancel</button>
+          </div>
+          <div class="btn-group">
+            <button mat-raised-button color="primary" type="button" (click)="onSubmit()" [disabled]="!myFormGroup.valid">Continue</button>
+          </div>
+        </div>
+      </form>
+  </div>
+</div>

@@ -112,4 +112,8 @@ export class SummaryComponent implements OnInit {
       console.log('error signing out: ', error);
     }
   }
+  questionnaire() {
+    this.router.navigateByUrl('/questionnaire');
+  }
+
 }
