@@ -4,6 +4,7 @@ import { ScannerComponent } from './scanner';
 import { ScanResultsComponent } from './scan-results';
 import { SummaryComponent } from './summary';
 import { PreScannerComponent } from './pre-scanner';
+import { QuestionnaireComponent } from './questionnaire';
 
 
 const routes: Routes = [
@@ -11,7 +12,8 @@ const routes: Routes = [
   { path: 'summary', component: SummaryComponent},
   { path: '', redirectTo: 'summary', pathMatch: 'full'},
   { path: 'scan-results', component: ScanResultsComponent },
-  { path: 'pre-scanner', component: PreScannerComponent }
+  { path: 'pre-scanner', component: PreScannerComponent },
+  { path: 'questionnaire', component: QuestionnaireComponent }
 ];
 
 @NgModule({

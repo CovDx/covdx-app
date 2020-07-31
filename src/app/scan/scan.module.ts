@@ -8,9 +8,10 @@ import { SharedModule } from '../shared';
 import { ScanResultsComponent } from './scan-results';
 import { SummaryComponent } from './summary';
 import { PreScannerComponent } from './pre-scanner';
+import { QuestionnaireComponent } from './questionnaire';
 
 @NgModule({
-  declarations: [ScannerComponent, ScanResultsComponent, SummaryComponent, PreScannerComponent],
+  declarations: [ScannerComponent, ScanResultsComponent, SummaryComponent, PreScannerComponent, QuestionnaireComponent],
   imports: [
     CommonModule,
     ScanRoutingModule,
