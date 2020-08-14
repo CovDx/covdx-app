@@ -4,7 +4,7 @@
 
 export const environment = {
   production: true,
-  apiBase: 'https://api.covdx.org/'
+  apiBase: 'https://api.summer.bio/'
   //apiBase: 'http://localhost:5000/'
   //apiBase: 'http://ec2-54-183-243-255.us-west-1.compute.amazonaws.com/'
 };
