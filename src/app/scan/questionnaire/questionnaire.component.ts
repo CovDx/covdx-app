@@ -1,4 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { ScanService } from '../../services'
 import { Location } from '@angular/common';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -13,7 +14,7 @@ import form_template from '../../../assets/form_template.js';
 export class QuestionnaireComponent implements OnInit {
   myFormGroup: FormGroup;
   formTemplate: any = form_template;
-  constructor(private router: Router, private location: Location) { }
+  constructor(private router: Router, private scanService: ScanService, private location: Location) { }
 
   ngOnInit() {
     let group = {};
@@ -35,6 +36,7 @@ export class QuestionnaireComponent implements OnInit {
 
   onSubmit() {
     if (this.myFormGroup.valid) {
+      this.scanService.setQuestions(this.myFormGroup.value);
       this.router.navigateByUrl('/pre-scanner');
     }
 

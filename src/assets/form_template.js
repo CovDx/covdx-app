@@ -122,7 +122,7 @@ const form_template = [
     "type":"date",
     "id":"symptomsStart",
     "label":"[If you have any] When did your symptoms start?",
-    "required":"true",
+    "required":"false",
   },
   {
     "type":"select",

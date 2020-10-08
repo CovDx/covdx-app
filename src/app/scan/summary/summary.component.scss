@@ -1,6 +1,3 @@
-@import '../../../../blue-grey-theme.scss';
-$primary: map-get($custom-theme, primary);
-
 .status {
   font-weight: bold;
 }
@@ -59,4 +56,8 @@ $primary: map-get($custom-theme, primary);
 
 .mat-main {
   color: white;
+}
+
+.spacer {
+  flex: 1 1 auto;
 }

@@ -9,6 +9,7 @@
         <li>Turning on the flash to provide more light</li>
       </ol>
     </div>
+    <button mat-raised-button color="primary" *ngIf="!(isPhone$ | async)" (click)="scan()">Scan</button>
     <button mat-raised-button (click)="cancel()">Cancel</button>
   </div>
 </div>

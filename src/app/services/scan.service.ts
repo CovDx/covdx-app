@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment'
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Plugins } from '@capacitor/core';
-import { ScanListItem, ScanResult } from '../models';
+import { NewScan } from '../models';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import { Auth } from 'aws-amplify';
@@ -12,49 +12,26 @@ const { Storage } = Plugins;
   providedIn: 'root'
 })
 export class ScanService {
-  private scanResults$ = new BehaviorSubject<ScanListItem>(null);
   constructor(private http: HttpClient) { }
-
-  save(scan: {barcode: string, deviceId: string, deviceType: string}) {
+  private questions: any;
+  save(scan: NewScan) {
     console.log(`Saving scan ${environment.apiBase} ${JSON.stringify(scan)}`);
     return this.setAuthHeader().pipe(
       flatMap(headers => {
-        return this.http.post<ScanResult>(`${environment.apiBase}api/scans`, scan, {headers})
+        return this.http.post(`${environment.apiBase}api/scans`, {barcode: scan.barcode, questions: this.questions}, {headers})
       })
     );
   }
 
-  historyRecieved(scan: ScanListItem) {
-    this.saveScan(scan);
-    this.scanResults$.next(scan);
+  setQuestions(questions: any) {
+    for(let key of Object.keys(questions)) {
+      questions[key] = questions[key].toString();
+    }
+    this.questions = questions;
   }
 
-  getResults() {
-    return this.scanResults$.asObservable();
-  }
-
-  acknowledge(scanId: string) {
-    return this.setAuthHeader().pipe(
-      flatMap(headers => {
-        return this.http.post(`${environment.apiBase}api/scans/acknowledge`, {scanId}, {headers})
-      })
-    );
-  }
-
-  saveScanList(scans: ScanListItem[]) {
-    const scanStr = JSON.stringify(scans);
-    return from(Storage.set({key: 'scans', value: scanStr}));
-  }
-
-  saveScan(scan: ScanListItem) {
-    console.log('saving scan ' + JSON.stringify(scan));
-    return from(Storage.get({key: 'scans'}).then(scans => {
-      let oldScans = (JSON.parse(scans.value) || []).filter(x => x.id !== scan.id);
-      oldScans.push(scan);
-      return oldScans;
-    })).pipe(
-      flatMap(x => this.saveScanList(x))
-    );
+  getQuestions() {
+    return this.questions;
   }
 
   private setAuthHeader(headers: HttpHeaders = null): Observable<HttpHeaders> {
@@ -63,7 +40,6 @@ export class ScanService {
     }
     return from(Auth.currentSession()).pipe(
       map(session => {
-        console.log(session.getAccessToken());
         const token = session.getIdToken().getJwtToken();
         return headers.set('Authorization', `Bearer ${token}`);
       })

@@ -7,6 +7,6 @@ const { PushNotifications } = Plugins;
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'CMTA';
+  title = 'SummerBio Scanner';
 
 }

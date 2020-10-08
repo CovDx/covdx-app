@@ -1,17 +1,17 @@
 {
-    "projectName": "covdxapp",
-    "version": "3.0",
-    "frontend": "javascript",
-    "javascript": {
-        "framework": "angular",
-        "config": {
-            "SourceDir": "src",
-            "DistributionDir": "dist",
-            "BuildCommand": "npm run-script build",
-            "StartCommand": "ng serve"
-        }
-    },
-    "providers": [
-        "awscloudformation"
-    ]
+  "projectName": "covdxapp",
+  "version": "3.0",
+  "frontend": "javascript",
+  "javascript": {
+    "framework": "angular",
+    "config": {
+      "SourceDir": "src",
+      "DistributionDir": "dist/cmta",
+      "BuildCommand": "npm run-script build",
+      "StartCommand": "ng serve"
+    }
+  },
+  "providers": [
+    "awscloudformation"
+  ]
 }

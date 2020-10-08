@@ -1,28 +1,13 @@
 <div class="summary-wrapper" fxLayout="column" fxLayoutAlign="stretch">
-  <mat-toolbar color="primary" fxS>
-    <span>Summary</span>
+  <mat-toolbar color="primary">
+    <span>SummerBio Scanner</span>
+    <span class="spacer"></span>
+    <button mat-button color="accent" (click)="signOut()">Sign Out</button>
   </mat-toolbar>
   <div fxLayout="column" fxLayoutGap="16px"  class="body-content">
-    <button class="signout-button" mat-fab color="accent" (click)="signOut()">
-      Sign Out
-    </button>
-    <div *ngIf="hasResult$ | async" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="6px">
-      <mat-icon>notifications_active</mat-icon>
-      <div>Please click the notification to view your result.</div>
-    </div>
-    <mat-selection-list *ngIf="(scans$ | async).length != 0" #tests [multiple]=false>
-      <div mat-subheader>Test History</div>
-      <mat-list-option (click)="resultClick(scan)" *ngFor="let scan of scans$ | async" color="accent" fxLayoutGap='10px'>
-        <mat-icon *ngIf="scan.status === 'pending'" matListIcon>autorenew</mat-icon>
-        <mat-icon *ngIf="scan.status != 'pending'" matListIcon>checkmark</mat-icon>
-        <div mat-line>{{scan.tag}}</div>
-        <div mat-line> {{scan.timestamp | date:'MM/d/yyyy'}}</div>
-        <mat-divider></mat-divider>
-      </mat-list-option>
-    </mat-selection-list>
-    <div *ngIf="!(hasResult$ | async)" fxLayout="row" fxLayoutAlign="center">
-      <a>Add a new sample by tapping the plus below.</a>
-    </div>
+  <div fxLayout="row" fxLayoutAlign="center">
+    <a>Add a new sample by tapping the plus below.</a>
+  </div>
   </div>
   <button class="scan-button" mat-fab color="accent" (click)="questionnaire()">
     <mat-icon>add</mat-icon>
