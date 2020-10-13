@@ -1,13 +1,14 @@
 import { Component, OnInit, ChangeDetectionStrategy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
-import { Plugins, PushNotificationToken, PushNotificationActionPerformed } from '@capacitor/core';
+import { Location } from '@angular/common';
+import { environment } from '../../../environments/environment'
+import { Plugins } from '@capacitor/core';
 import { ScanService } from '../../services';
-import { FCM } from "capacitor-fcm";
+import { ScanHistory } from '../../models';
 import { Auth } from 'aws-amplify';
+import { Observable } from 'rxjs';
 
-const fcm = new FCM();
-const { Device, PushNotifications, App, Storage } = Plugins;
+const { App } = Plugins;
 
 @Component({
   selector: 'summary',
@@ -18,11 +19,15 @@ const { Device, PushNotifications, App, Storage } = Plugins;
 
 export class SummaryComponent implements OnInit {
   private isPhone = true;
-  constructor(private zone: NgZone,
+  public scanHistory$: Observable<ScanHistory[]>;
+  constructor(private location: Location,
               private scanService: ScanService,
               private router: Router) { }
 
   ngOnInit(): void {
+    App.addListener('backButton', () => {
+    });
+    this.scanHistory$ = this.scanService.getHistory();
   }
 
   prescanner() {
@@ -37,7 +42,11 @@ export class SummaryComponent implements OnInit {
     }
   }
   questionnaire() {
-    this.router.navigateByUrl('/questionnaire');
+    if(environment.skipQuestions) {
+      this.router.navigateByUrl('/pre-scanner');
+    } else {
+      this.router.navigateByUrl('/questionnaire');
+    }
   }
 
 }

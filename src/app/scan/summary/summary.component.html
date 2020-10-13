@@ -4,6 +4,13 @@
     <span class="spacer"></span>
     <button mat-button color="accent" (click)="signOut()">Sign Out</button>
   </mat-toolbar>
+  <div fxLayout="column" class="history-container">
+    <div fxFlexAlign="center" class="mat-caption">Scan History</div>
+    <div *ngFor="let scan of scanHistory$ | async" fxLayout="row" fxLayoutAlign="space-around" class="history-row">
+      <div>{{scan.date}}</div>
+      <div>Barcode: {{scan.barcode}}</div>
+    </div>
+  </div>
   <div fxLayout="column" fxLayoutGap="16px"  class="body-content">
   <div fxLayout="row" fxLayoutAlign="center">
     <a>Add a new sample by tapping the plus below.</a>

@@ -43,6 +43,6 @@ export class QuestionnaireComponent implements OnInit {
   }
 
   cancel() {
-    this.location.back();
+    this.router.navigateByUrl('/summary');
   }
 }

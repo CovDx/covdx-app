@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment'
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Plugins } from '@capacitor/core';
-import { NewScan } from '../models';
+import { NewScan, ScanHistory } from '../models';
 import { BehaviorSubject, Observable, from } from 'rxjs';
 import { flatMap, map } from 'rxjs/operators';
 import { Auth } from 'aws-amplify';
@@ -13,7 +13,14 @@ const { Storage } = Plugins;
 })
 export class ScanService {
   constructor(private http: HttpClient) { }
-  private questions: any;
+  private questions: any = {};
+  getHistory(): Observable<ScanHistory[]> {
+    return this.setAuthHeader().pipe(
+      flatMap(headers => {
+        return this.http.get<ScanHistory[]>(`${environment.apiBase}api/scans`, {headers});
+      })
+    )
+  }
   save(scan: NewScan) {
     console.log(`Saving scan ${environment.apiBase} ${JSON.stringify(scan)}`);
     return this.setAuthHeader().pipe(

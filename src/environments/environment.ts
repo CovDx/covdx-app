@@ -3,8 +3,8 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: true,
-  //apiBase: 'https://api.summer.bio/'
+  production: false,
+  skipQuestions: true,
   apiBase: 'http://localhost:5000/'
   //apiBase: 'http://ec2-54-183-243-255.us-west-1.compute.amazonaws.com/'
 };

@@ -35,13 +35,8 @@ export class ScannerComponent implements OnInit {
       } else {
         this.deviceType = info.platform;
       }
-      console.log('starting scanner config');
       if(isPhone) {
-        cmbScanner.setCameraMode(0);
-        cmbScanner.enableImageGraphics(true);
-        cmbScanner.setPreviewContainerPositionAndSize(0,0,100,60);
-        cmbScanner.setPreviewOptions(cmbScanner.CONSTANTS.PREVIEW_OPTIONS.DEFAULTS);
-        cmbScanner.setPreviewOverlayMode(cmbScanner.CONSTANTS.PREVIEW_OVERLAY_MODE.OM_CMB);
+        console.log('starting scanner config');
         cmbScanner.setConnectionStateDidChangeOfReaderCallback(connectionState => {
           if(connectionState == cmbScanner.CONSTANTS.CONNECTION_STATE_CONNECTED){
             cmbScanner.setSymbologyEnabled("SYMBOL.DATAMATRIX", true).then(function(result) {
@@ -57,18 +52,10 @@ export class ScannerComponent implements OnInit {
               } else {
                 alert('Failed to configure symbol matrix for c128');
               }
-            })
+            });
+            app.scan();
           }
-        });
-        cmbScanner.loadScanner("DEVICE_TYPE_MOBILE_DEVICE",function(result){
-          cmbScanner.connect().then(result => {
-            if(!result) {
-              console.error('scanner failed to connect')
-            } else {
-              console.log('scanner connected successfully');
-              app.scan();
-            }
-          });
+          console.log('Connection state: ' + connectionState);
         });
         cmbScanner.setResultCallback(function(result){
           if(result && result.readResults && result.readResults.length > 0){
@@ -82,8 +69,22 @@ export class ScannerComponent implements OnInit {
                 }
             });
         }});
+        cmbScanner.loadScanner("DEVICE_TYPE_MOBILE_DEVICE",function(result){
+          cmbScanner.connect().then(result => {
+            if(!result) {
+              console.error('scanner failed to connect')
+            } else {
+              console.log('scanner connected successfully');
+            }
+          });
+        });
       }
     });
+    cmbScanner.setCameraMode(0);
+    cmbScanner.enableImageGraphics(true);
+    cmbScanner.setPreviewContainerPositionAndSize(0,0,100,60);
+    cmbScanner.setPreviewOptions(cmbScanner.CONSTANTS.PREVIEW_OPTIONS.DEFAULTS);
+    cmbScanner.setPreviewOverlayMode(cmbScanner.CONSTANTS.PREVIEW_OVERLAY_MODE.OM_CMB);
   }
 
   newScan(barcode: string) {
@@ -98,7 +99,6 @@ export class ScannerComponent implements OnInit {
         });
       })
     }, res => {
-      console.log(JSON.stringify(res));
       let message: string;
       if (res instanceof HttpErrorResponse) {
         if(res.status === 400) {
@@ -132,6 +132,7 @@ export class ScannerComponent implements OnInit {
     if (!this.isPhone$.value) {
       this.newScan(`test-barcode-${Math.random()}`);
     } else {
+      console.log('scan()');
       cmbScanner.startScanning();
       cmbScanner.sendCommand('SET CAMERA.ZOOM 1');
     }
