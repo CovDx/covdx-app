@@ -1,0 +1,11 @@
+{
+  "appId": "com.jobycmta.app",
+  "appName": "cmta",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist/cmta",
+  "cordova": {},
+  "android": {
+    "allowMixedContent": true
+}
+}
